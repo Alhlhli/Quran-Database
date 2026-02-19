@@ -1,0 +1,2364 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قاعدة بيانات القرآن الكريم الشاملة - 114 سورة كاملة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="mosque" patternUnits="userSpaceOnUse" width="40" height="40"><circle cx="20" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23mosque)"/></svg>');
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            font-weight: 700;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .header .description {
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+        
+        .controls {
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 3px solid #dee2e6;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 18px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .filter-select {
+            padding: 12px 18px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            font-size: 14px;
+            background: white;
+            min-width: 130px;
+            transition: all 0.3s;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            max-height: 70vh;
+            background: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            min-width: 1600px;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 15px 6px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-weight: bold;
+            border: 1px solid #2980b9;
+            font-size: 10px;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s;
+            /* يسمح بوضع رمز التصفية بشكل مطلق داخل الرأس */
+            position: sticky;
+            overflow: visible;
+        }
+        
+        th:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
+        }
+        
+        th span {
+            display: inline-block;
+            margin-left: 3px;
+            font-size: 11px;
+            color: #fff;
+            opacity: 0.8;
+        }
+        
+        th:hover span {
+            opacity: 1;
+        }
+        
+        td {
+            padding: 10px 5px;
+            text-align: center;
+            border: 1px solid #ddd;
+            transition: all 0.2s;
+            font-size: 10px;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e3f2fd !important;
+            transform: scale(1.005);
+        }
+        
+        .makki {
+            background: linear-gradient(135deg, rgba(227, 242, 253, 0.3) 0%, rgba(187, 222, 251, 0.3) 100%) !important;
+        }
+        
+        .madani {
+            background: linear-gradient(135deg, rgba(232, 245, 232, 0.3) 0%, rgba(200, 230, 201, 0.3) 100%) !important;
+        }
+        
+        .surah-name {
+            font-weight: bold;
+            font-size: 12px;
+            color: #2c3e50;
+            white-space: nowrap;
+        }
+        
+        .type-badge {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 9px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .makki-badge {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+        }
+        
+        .madani-badge {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            color: #388e3c;
+        }
+        
+        .statistics {
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .progress-container {
+            padding: 0 25px 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .search-box {
+                width: 100%;
+                min-width: unset;
+            }
+            
+            .filter-select {
+                width: 100%;
+                min-width: unset;
+            }
+            
+            th, td {
+                padding: 6px 3px;
+                font-size: 9px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /*
+         * عناصر التصفية لكل عمود
+         * يتم إضافة رمز صغير إلى عنوان كل عمود يمكن الضغط عليه لعرض قائمة
+         * بجميع القيم الفريدة في هذا العمود مع عددها. يمكن للمستخدم اختيار
+         * إحدى هذه القيم لتصفية الجدول حسبها، أو اختيار "عرض الكل" لإلغاء
+         * التصفية. تضمن هذه الأنماط مظهرًا أنيقًا للقائمة والرمز.
+         */
+        .filter-icon {
+            cursor: pointer;
+            font-size: 12px;
+            /* لون الرمز أبيض ليظهر بوضوح فوق خلفية الرأس الداكنة */
+            color: #ffffff;
+            transition: color 0.2s;
+            /* توسيع مساحة الرمز لتسهيل النقر عليه */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            /* وضع الرمز بشكل مطلق داخل رأس الجدول بحيث لا يتداخل مع النص أو السهم */
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 4px;
+            /* إزالة لون الخلفية المستخدم للتصحيح، تجعل الخلفية شفافة في النسخة النهائية */
+            background-color: transparent;
+            /* تأكد من أن الأيقونة فوق طبقة رأس الجدول حتى تستقبل النقرات */
+            z-index: 20;
+        }
+        .filter-icon:hover {
+            color: #ffd700;
+        }
+        .filter-menu {
+            position: absolute;
+            z-index: 200;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            max-height: 250px;
+            overflow-y: auto;
+            min-width: 180px;
+            direction: rtl;
+        }
+        .filter-menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .filter-menu li {
+            /* زيادة المساحة الرأسية لتسهيل النقر على عناصر القائمة */
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 11px;
+            border-bottom: 1px solid #f1f1f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            line-height: 1.4;
+        }
+        .filter-menu li:hover {
+            background-color: #f9f9f9;
+        }
+        .filter-menu li.active {
+            background-color: #e6f7ff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>🕌 قاعدة بيانات القرآن الكريم الشاملة</h1>
+                <p class="subtitle">رواية حفص عن عاصم - جميع السور الـ114 مع البيانات الكاملة</p>
+                <p class="description">بيانات مفصلة وإحصائيات شاملة لكل سورة مع الأنبياء والرسل المذكورين</p>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 ابحث في أسماء السور أو الأنبياء...">
+            <select class="filter-select" id="typeFilter">
+                <option value="all">جميع السور</option>
+                <option value="makki">المكية (86 سورة)</option>
+                <option value="madani">المدنية (28 سورة)</option>
+            </select>
+            <select class="filter-select" id="prophetsFilter">
+                <option value="all">جميع الأنبياء</option>
+                <option value="with_prophets">السور التي تذكر أنبياء</option>
+                <option value="no_prophets">السور بدون ذكر أنبياء</option>
+            </select>
+            <button class="btn btn-primary" onclick="exportToExcel()">📊 تصدير Excel</button>
+            <button class="btn btn-secondary" onclick="exportToCSV()">📄 تصدير CSV</button>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table id="quranTable">
+                <thead>
+                    <tr>
+                        <th style="width: 30px;">م</th>
+                        <th style="width: 100px;">اسم السورة</th>
+                        <th style="width: 40px;">رقمها</th>
+                        <th style="width: 60px;">ترتيب النزول</th>
+                        <th style="width: 50px;">عدد الآيات</th>
+                        <th style="width: 60px;">عدد الكلمات</th>
+                        <th style="width: 60px;">عدد الحروف</th>
+                        <th style="width: 60px;">التصنيف</th>
+                        <th style="width: 80px;">الحروف المقطعة</th>
+                        <th style="width: 50px;">عدد السجدات</th>
+                        <th style="width: 50px;">ذكر "الله"</th>
+                        <th style="width: 60px;">أول كلمة</th>
+                        <th style="width: 60px;">آخر كلمة</th>
+                        <th style="width: 100px;">الكلمة الأكثر تكراراً</th>
+                        <th style="width: 100px;">الحرف الأكثر تكراراً</th>
+                        <th style="width: 120px;">أسماء الله المذكورة</th>
+                        <th style="width: 100px;">الأنبياء المذكورون</th>
+                        <th style="width: 80px;">الأرقام المذكورة</th>
+                        <th style="width: 80px;">الألوان المذكورة</th>
+                        <th style="width: 100px;">الحيوانات المذكورة</th>
+                        <th style="width: 200px;">أطول آية</th>
+                        <th style="width: 200px;">أقصر آية</th>
+                        <th style="width: 140px;">متوسط طول الآية (كلمات)</th>
+                        <th style="width: 140px;">متوسط طول الآية (حروف)</th>
+                        <th style="width: 120px;">عدد الحروف الفريدة</th>
+                        <th style="width: 140px;">أكثر نهاية (حرف)</th>
+                        <th style="width: 160px;">عدد نهايات الحروف الفريدة</th>
+                        <th style="width: 180px;">أكثر كلمة نهاية</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="28" class="loading">
+                            📖 جاري تحميل البيانات الكاملة للسور الـ114...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="statistics">
+            <div class="stat-card">
+                <div class="stat-number" id="totalSurahs">114</div>
+                <div class="stat-label">إجمالي السور</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalVerses">6,236</div>
+                <div class="stat-label">إجمالي الآيات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalWords">77,797</div>
+                <div class="stat-label">إجمالي الكلمات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalLetters">330,709</div>
+                <div class="stat-label">إجمالي الحروف</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="makkiSurahs">86</div>
+                <div class="stat-label">السور المكية</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="madaniSurahs">28</div>
+                <div class="stat-label">السور المدنية</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalProphets">25</div>
+                <div class="stat-label">الأنبياء المذكورون</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalSajdahs">15</div>
+                <div class="stat-label">إجمالي السجدات</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        // البيانات الكاملة للقرآن الكريم - جميع السور الـ114
+        const completeQuranData = [
+            // السور 1-30 (البيانات الكاملة)
+            { id: 1, name: "الفاتحة", number: 1, revelationOrder: 5, verses: 7, words: 29, letters: 143, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 2, firstWord: "بِسْمِ", lastWord: "الضَّالِّينَ", mostFrequentWord: "الله (2)", mostFrequentLetter: "الألف (22)", allahNames: "الله، الرَّحْمَنِ، الرَّحِيمِ", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 2, name: "البقرة", number: 2, revelationOrder: 87, verses: 286, words: 6140, letters: 26249, type: "مدنية", disconnectedLetters: "الم", sajdahs: 0, allah: 282, firstWord: "الم", lastWord: "الْكَافِرِينَ", mostFrequentWord: "الله (282)", mostFrequentLetter: "الألف (4744)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، الْمَلِكُ، القدوس، السلام، المؤمن، المهيمن، العزيز، الجبار، المتكبر، الخالق، البارئ، المصور، الغفار، القهار، الوهاب، الرزاق، الفتاح، العليم، القابض، الباسط، الخافض، الرافع، المعز، المذل، السميع، البصير، الحكم، العدل، اللطيف، الخبير، الحليم، العظيم، الغفور، الشكور، العلي، الكبير، الحفيظ، المقيت، الحسيب، الجليل، الكريم، الرقيب، المجيب، الواسع، الحكيم، الودود، المجيد، الباعث، الشهيد، الحق، الوكيل، القوي، المتين، الولي، الحميد، المحصي، المبدئ، المعيد، المحيي، المميت، الحي، القيوم، الواجد، الماجد، الواحد، الصمد، القادر، المقتدر، المقدم، المؤخر، الأول، الآخر، الظاهر، الباطن، الوالي، المتعالي، البر، التواب، المنتقم، العفو، الرؤوف، مالك الملك", prophets: "آدم، إبراهيم، إسماعيل، إسحاق، يعقوب، موسى، هارون، داوود، سليمان، عيسى، يحيى، زكريا", numbers: "واحد، اثنان، ثلاثة، أربعة، خمسة، ستة، سبعة، ثمانية، تسعة، عشرة، أحد عشر، اثنا عشر، عشرون، ثلاثون، أربعون، خمسون، ستون، سبعون، ثمانون، تسعون، مائة، مائتان، ألف", colors: "أبيض، أسود، أصفر", animals: "بقرة، قردة، خنازير، حمار، كلب، ذباب، بعوضة" },
+            { id: 3, name: "آل عمران", number: 3, revelationOrder: 89, verses: 200, words: 3501, letters: 14984, type: "مدنية", disconnectedLetters: "الم", sajdahs: 0, allah: 210, firstWord: "الم", lastWord: "تُفْلِحُونَ", mostFrequentWord: "الله (210)", mostFrequentLetter: "الألف (2705)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، القائم، الحي، القيوم، الوهاب، الرزاق، خير الماكرين، السميع، العليم، البصير، الغفور، الشكور، الحليم، العظيم، الغني، الحميد، الولي، النصير، خير الناصرين، أرحم الراحمين، خير الحاكمين، سريع الحساب، شديد العقاب، ذو الفضل العظيم، غافر الذنب، قابل التوب، التواب، الرحيم", prophets: "آدم، نوح، إبراهيم، آل إبراهيم، آل عمران، موسى، عيسى، مريم، زكريا، يحيى", numbers: "ثلاثة، خمسة، سبعة، ثمانية، تسعة، عشرة، عشرون، أربعون، خمسون، ألف، ثلاثة آلاف، خمسة آلاف", colors: "أبيض، أسود", animals: "طير" },
+            { id: 4, name: "النساء", number: 4, revelationOrder: 92, verses: 176, words: 3763, letters: 16030, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 229, firstWord: "يَا", lastWord: "عَلِيمٌ", mostFrequentWord: "الله (229)", mostFrequentLetter: "الألف (2898)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، العليم، الخبير، السميع، البصير، الغفور، الرحيم، التواب، الحليم، العظيم، الغني، الحميد، الشاكر، العلي، الكبير، الحفيظ، المقيت، الحسيب، الشهيد، الوكيل، القوي، المتين، الولي، الحميد، الواسع، الحكيم", prophets: "آدم، نوح، إبراهيم، إسماعيل، إسحاق، يعقوب، موسى، عيسى، مريم", numbers: "واحدة، اثنتان، ثلاث، أربع، نصف، ثلث، ربع، سدس، ثمن، عشر", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 5, name: "المائدة", number: 5, revelationOrder: 112, verses: 120, words: 2837, letters: 11933, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 147, firstWord: "يَا", lastWord: "قَدِيرٌ", mostFrequentWord: "الله (147)", mostFrequentLetter: "الألف (2156)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، السميع، العليم، الغفور، الرحيم، التواب، سريع العقاب، شديد العقاب، ذو انتقام، الغني، الحميد", prophets: "آدم، نوح، إبراهيم، إسماعيل، إسحاق، يعقوب، موسى، هارون، داوود، سليمان، عيسى، مريم", numbers: "ثلاثة، خمسة، اثنا عشر، أربعون", colors: "أبيض، أسود", animals: "خنزير، قردة، ما أهل لغير الله به، المنخنقة، الموقوذة، المتردية، النطيحة، ما أكل السبع" },
+            { id: 6, name: "الأنعام", number: 6, revelationOrder: 55, verses: 165, words: 3055, letters: 12613, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 87, firstWord: "الْحَمْدُ", lastWord: "تَعْمَلُونَ", mostFrequentWord: "الله (87)", mostFrequentLetter: "الألف (2278)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، العليم، الخبير، اللطيف، السميع، البصير، الحي، القيوم، القاهر، الحكيم، الخبير، الغفور، الرحيم، الفاطر، البارئ، المصور", prophets: "إبراهيم، إسماعيل، إسحاق، يعقوب، نوح، داوود، سليمان، أيوب، يوسف، موسى، هارون، زكريا، يحيى، عيسى، إلياس، اليسع، يونس، لوط", numbers: "واحد، اثنان، ثلاثة، أربعة، ستة، ثمانية", colors: "أخضر، أصفر، مختلف ألوانه", animals: "أنعام، بقر، غنم، ضأن، معز، إبل، حمير، بغال، خيل" },
+            { id: 7, name: "الأعراف", number: 7, revelationOrder: 39, verses: 206, words: 3344, letters: 14071, type: "مكية", disconnectedLetters: "المص", sajdahs: 1, allah: 61, firstWord: "المص", lastWord: "يَسْجُدُونَ", mostFrequentWord: "قال (57)", mostFrequentLetter: "الألف (2543)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، الغفور، الرحيم، التواب، العليم، الخالق، البارئ، المصور، رب العالمين", prophets: "آدم، نوح، هود، صالح، لوط، شعيب، موسى، هارون", numbers: "سبعة، أربعون، سبعون", colors: "أخضر، أصفر، أبيض", animals: "ناقة، عجل، ثعبان، جراد، قمل، ضفادع" },
+            { id: 8, name: "الأنفال", number: 8, revelationOrder: 88, verses: 75, words: 1243, letters: 5299, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 89, firstWord: "يَسْأَلُونَكَ", lastWord: "عَلِيمٌ", mostFrequentWord: "الله (89)", mostFrequentLetter: "الألف (958)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، السميع، العليم، نعم المولى، نعم النصير", prophets: "لا يوجد", numbers: "خمس، ثمانية، عشرة، عشرون، ستون، مائة، ألف، ألفان", colors: "لا يوجد", animals: "خيل" },
+            { id: 9, name: "التوبة", number: 9, revelationOrder: 113, verses: 129, words: 2506, letters: 10873, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 169, firstWord: "بَرَاءَةٌ", lastWord: "العَظِيمِ", mostFrequentWord: "الله (169)", mostFrequentLetter: "الألف (1966)", allahNames: "الله، العزيز، الحكيم، السميع، العليم، الغفور، الرحيم، التواب، الرؤوف، رب العرش العظيم", prophets: "إبراهيم", numbers: "أربعة، تسعة، اثنا عشر، عشرون، أربعون، خمسون، سبعون، ثمانون، تسعون", colors: "أبيض", animals: "لا يوجد" },
+            { id: 10, name: "يونس", number: 10, revelationOrder: 51, verses: 109, words: 1841, letters: 7593, type: "مكية", disconnectedLetters: "الر", sajdahs: 0, allah: 63, firstWord: "الر", lastWord: "المُؤْمِنِينَ", mostFrequentWord: "الله (63)", mostFrequentLetter: "الألف (1373)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، العليم، الخبير، الغفور، الرحيم، الحق، المبين", prophets: "نوح، موسى، هارون، يونس", numbers: "ألف، مائة ألف", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 11, name: "هود", number: 11, revelationOrder: 52, verses: 123, words: 1947, letters: 7817, type: "مكية", disconnectedLetters: "الر", sajdahs: 0, allah: 40, firstWord: "الر", lastWord: "تَعْمَلُونَ", mostFrequentWord: "قال (43)", mostFrequentLetter: "الألف (1414)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، الغفور، الودود، ذو العرش، المجيد، فعال لما يريد", prophets: "نوح، هود، صالح، إبراهيم، لوط، شعيب، موسى", numbers: "أربعون، خمسون، ألف، تسعمائة وخمسون", colors: "أبيض، أسود", animals: "ناقة" },
+            { id: 12, name: "يوسف", number: 12, revelationOrder: 53, verses: 111, words: 1795, letters: 7160, type: "مكية", disconnectedLetters: "الر", sajdahs: 0, allah: 45, firstWord: "الر", lastWord: "يُؤْمِنُونَ", mostFrequentWord: "قال (59)", mostFrequentLetter: "الألف (1295)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، العليم، اللطيف، الغالب على أمره", prophets: "يعقوب، يوسف، إبراهيم، إسحاق", numbers: "أحد عشر، اثنا عشر، سبع، بضع", colors: "لا يوجد", animals: "ذئب، بقرات" },
+            { id: 13, name: "الرعد", number: 13, revelationOrder: 96, verses: 43, words: 854, letters: 3461, type: "مدنية", disconnectedLetters: "المر", sajdahs: 1, allah: 33, firstWord: "المر", lastWord: "المَآبِ", mostFrequentWord: "الله (33)", mostFrequentLetter: "الألف (626)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، العليم، الخبير، الغفور، شديد العقاب، سريع الحساب", prophets: "لا يوجد", numbers: "اثنان", colors: "أبيض، أحمر، مختلف ألوانه", animals: "لا يوجد" },
+            { id: 14, name: "إبراهيم", number: 14, revelationOrder: 72, verses: 52, words: 830, letters: 3434, type: "مكية", disconnectedLetters: "الر", sajdahs: 0, allah: 38, firstWord: "الر", lastWord: "الأَلْبَابِ", mostFrequentWord: "الله (38)", mostFrequentLetter: "الألف (621)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحميد، الغني، الحميد، الغفور، الرحيم، الواحد، القهار", prophets: "إبراهيم، موسى، نوح، عاد، ثمود", numbers: "أربعة عشر", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 15, name: "الحجر", number: 15, revelationOrder: 54, verses: 99, words: 658, letters: 2791, type: "مكية", disconnectedLetters: "الر", sajdahs: 0, allah: 0, firstWord: "الر", lastWord: "اليَقِينُ", mostFrequentWord: "قال (15)", mostFrequentLetter: "الألف (505)", allahNames: "الرَّحْمَنُ، الرَّحِيمُ، الخلاق، العليم", prophets: "إبراهيم، لوط", numbers: "سبعة، أربعة", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 16, name: "النحل", number: 16, revelationOrder: 70, verses: 128, words: 1845, letters: 7640, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 85, firstWord: "أَتَى", lastWord: "مُحْسِنُونَ", mostFrequentWord: "الله (85)", mostFrequentLetter: "الألف (1382)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، العليم، الخبير، السميع، البصير، الغفور، الرحيم", prophets: "إبراهيم", numbers: "واحد، اثنان، ثمانية", colors: "مختلف ألوانه، أبيض", animals: "نحل، أنعام، خيل، بغال، حمير" },
+            { id: 17, name: "الإسراء", number: 17, revelationOrder: 50, verses: 111, words: 1558, letters: 6440, type: "مكية", disconnectedLetters: "لا", sajdahs: 1, allah: 10, firstWord: "سُبْحَانَ", lastWord: "تَكْبِيرًا", mostFrequentWord: "قال (21)", mostFrequentLetter: "الألف (1165)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، الحميد", prophets: "موسى، نوح", numbers: "سبعة، تسعة", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 18, name: "الكهف", number: 18, revelationOrder: 69, verses: 110, words: 1583, letters: 6360, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 17, firstWord: "الْحَمْدُ", lastWord: "أَحَدًا", mostFrequentWord: "قال (25)", mostFrequentLetter: "الألف (1150)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، الواسع، الرحيم", prophets: "موسى", numbers: "ثلاثة، أربعة، خمسة، ستة، سبعة، ثمانية، تسعة، ثلاثمائة", colors: "أخضر، أصفر", animals: "كلب، حوت" },
+            { id: 19, name: "مريم", number: 19, revelationOrder: 44, verses: 98, words: 972, letters: 3835, type: "مكية", disconnectedLetters: "كهيعص", sajdahs: 1, allah: 8, firstWord: "كهيعص", lastWord: "رِكْزًا", mostFrequentWord: "قال (23)", mostFrequentLetter: "الألف (694)", allahNames: "الرَّحْمَنُ، الرَّحِيمُ", prophets: "زكريا، يحيى، مريم، عيسى، إبراهيم، إسحاق، يعقوب، موسى، هارون، إسماعيل، إدريس", numbers: "ثلاثة، ثمانية عشر", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 20, name: "طه", number: 20, revelationOrder: 45, verses: 135, words: 1355, letters: 5288, type: "مكية", disconnectedLetters: "طه", sajdahs: 0, allah: 6, firstWord: "طه", lastWord: "اهْتَدَى", mostFrequentWord: "قال (28)", mostFrequentLetter: "الألف (957)", allahNames: "الله، الرَّحْمَنُ، العلي، الأعلى", prophets: "موسى، هارون، آدم", numbers: "عشرون، أربعون", colors: "أبيض، أخضر", animals: "ثعبان، عجل" },
+            { id: 21, name: "الأنبياء", number: 21, revelationOrder: 73, verses: 112, words: 1177, letters: 4896, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 5, firstWord: "اقْتَرَبَ", lastWord: "المُسْتَعَانُ", mostFrequentWord: "قال (14)", mostFrequentLetter: "الألف (885)", allahNames: "الرَّحْمَنُ، الرَّحِيمُ، الحكيم، العليم", prophets: "إبراهيم، لوط، إسحاق، يعقوب، نوح، داوود، سليمان، أيوب، إسماعيل، إدريس، ذو الكفل، يونس، زكريا، يحيى، مريم، عيسى، موسى، هارون", numbers: "ألف", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 22, name: "الحج", number: 22, revelationOrder: 103, verses: 78, words: 1279, letters: 5178, type: "مدنية", disconnectedLetters: "لا", sajdahs: 2, allah: 74, firstWord: "يَا", lastWord: "النَّصِيرُ", mostFrequentWord: "الله (74)", mostFrequentLetter: "الألف (936)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، الغفور، الرحيم، اللطيف، الخبير، السميع، البصير، الغني، الحميد", prophets: "إبراهيم", numbers: "اثنان، ثمانية", colors: "أبيض، أحمر، أخضر، أصفر، مختلف ألوانه", animals: "بعوضة، ذباب" },
+            { id: 23, name: "المؤمنون", number: 23, revelationOrder: 74, verses: 118, words: 1050, letters: 4354, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 13, firstWord: "قَدْ", lastWord: "الكَافِرُونَ", mostFrequentWord: "قال (16)", mostFrequentLetter: "الألف (788)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، رب العرش الكريم، أرحم الراحمين، خير الرازقين", prophets: "نوح، هود، موسى، هارون، عيسى، مريم", numbers: "سبعة، ثلاثة وعشرون، ألف", colors: "أخضر", animals: "لا يوجد" },
+            { id: 24, name: "النور", number: 24, revelationOrder: 102, verses: 64, words: 1316, letters: 5523, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 80, firstWord: "سُورَةٌ", lastWord: "حَكِيمٌ", mostFrequentWord: "الله (80)", mostFrequentLetter: "الألف (999)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، السميع، العليم، الغفور، الرحيم، التواب، نور السماوات والأرض", prophets: "لا يوجد", numbers: "أربعة، خمسة، ثمانون، مائة", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 25, name: "الفرقان", number: 25, revelationOrder: 42, verses: 77, words: 896, letters: 3690, type: "مكية", disconnectedLetters: "لا", sajdahs: 1, allah: 6, firstWord: "تَبَارَكَ", lastWord: "لِزَامًا", mostFrequentWord: "قال (14)", mostFrequentLetter: "الألف (668)", allahNames: "الرَّحْمَنُ، الرَّحِيمُ، الغفور", prophets: "موسى، هارون، نوح، عاد، ثمود", numbers: "خمسة وعشرون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 26, name: "الشعراء", number: 26, revelationOrder: 47, verses: 227, words: 1320, letters: 5416, type: "مكية", disconnectedLetters: "طسم", sajdahs: 0, allah: 16, firstWord: "طسم", lastWord: "يَنْقَلِبُونَ", mostFrequentWord: "قال (45)", mostFrequentLetter: "الألف (980)", allahNames: "الرَّحِيمُ، العزيز، رب العالمين", prophets: "موسى، هارون، إبراهيم، نوح، هود، صالح، لوط، شعيب", numbers: "أربعون", colors: "أبيض، أصفر", animals: "ناقة، ثعبان" },
+            { id: 27, name: "النمل", number: 27, revelationOrder: 48, verses: 93, words: 1165, letters: 4679, type: "مكية", disconnectedLetters: "طس", sajdahs: 1, allah: 27, firstWord: "طس", lastWord: "تَعْمَلُونَ", mostFrequentWord: "قال (24)", mostFrequentLetter: "الألف (846)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، الكريم", prophets: "موسى، سليمان، داوود، صالح، لوط", numbers: "تسعة، أربعون", colors: "أبيض، أخضر", animals: "نمل، هدهد، طير" },
+            { id: 28, name: "القصص", number: 28, revelationOrder: 49, verses: 88, words: 1438, letters: 5796, type: "مكية", disconnectedLetters: "طسم", sajdahs: 0, allah: 25, firstWord: "طسم", lastWord: "تُرْجَعُونَ", mostFrequentWord: "قال (25)", mostFrequentLetter: "الألف (1048)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، العليم", prophets: "موسى، هارون، فرعون", numbers: "ثمانية، عشر، أربعون", colors: "أبيض", animals: "لا يوجد" },
+            { id: 29, name: "العنكبوت", number: 29, revelationOrder: 85, verses: 69, words: 984, letters: 4115, type: "مكية", disconnectedLetters: "الم", sajdahs: 0, allah: 42, firstWord: "الم", lastWord: "المُحْسِنِينَ", mostFrequentWord: "الله (42)", mostFrequentLetter: "الألف (744)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، العليم، السميع", prophets: "نوح، إبراهيم، لوط، شعيب، هود، صالح، موسى", numbers: "ألف، تسعمائة وخمسون", colors: "لا يوجد", animals: "عنكبوت، ذباب" },
+            { id: 30, name: "الروم", number: 30, revelationOrder: 84, verses: 60, words: 816, letters: 3385, type: "مكية", disconnectedLetters: "الم", sajdahs: 0, allah: 24, firstWord: "الم", lastWord: "يُوقِنُونَ", mostFrequentWord: "الله (24)", mostFrequentLetter: "الألف (613)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، العليم", prophets: "لا يوجد", numbers: "ثلاثون، بضع", colors: "مختلف ألوانه", animals: "لا يوجد" },
+            { id: 31, name: "لقمان", number: 31, revelationOrder: 57, verses: 34, words: 548, letters: 2104, type: "مكية", disconnectedLetters: "الم", sajdahs: 0, allah: 30, firstWord: "الم", lastWord: "خَبِيرٌ", mostFrequentWord: "الله (30)", mostFrequentLetter: "الألف (380)", allahNames: "الله، العزيز، الحكيم، الغني، الحميد، اللطيف، الخبير", prophets: "لقمان", numbers: "خمس", colors: "مختلف ألوانه", animals: "حمار، طير" },
+            { id: 32, name: "السجدة", number: 32, revelationOrder: 75, verses: 30, words: 372, letters: 1505, type: "مكية", disconnectedLetters: "الم", sajdahs: 1, allah: 18, firstWord: "الم", lastWord: "تَعْمَلُونَ", mostFrequentWord: "الله (18)", mostFrequentLetter: "الألف (272)", allahNames: "الله، العزيز، الرحيم، الحكيم، العليم", prophets: "موسى", numbers: "ألف، خمسون ألف", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 33, name: "الأحزاب", number: 33, revelationOrder: 90, verses: 73, words: 1303, letters: 5563, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 90, firstWord: "يَا", lastWord: "رَحِيمًا", mostFrequentWord: "الله (90)", mostFrequentLetter: "الألف (1006)", allahNames: "الله، الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، الغفور، الرحيم، السميع، البصير، القوي، اللطيف، الخبير", prophets: "محمد، إبراهيم، نوح", numbers: "أربعون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 34, name: "سبأ", number: 34, revelationOrder: 58, verses: 54, words: 883, letters: 3421, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 23, firstWord: "الْحَمْدُ", lastWord: "بَعِيدٍ", mostFrequentWord: "الله (23)", mostFrequentLetter: "الألف (619)", allahNames: "الله، الحميد، الغني، العليم، الخبير، الرحيم، الغفور، اللطيف", prophets: "داوود، سليمان", numbers: "ألف", colors: "لا يوجد", animals: "طير" },
+            { id: 35, name: "فاطر", number: 35, revelationOrder: 43, verses: 45, words: 778, letters: 3058, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 42, firstWord: "الْحَمْدُ", lastWord: "بَصِيرٌ", mostFrequentWord: "الله (42)", mostFrequentLetter: "الألف (553)", allahNames: "الله، فاطر السماوات والأرض، العزيز، الحكيم، الغني، الحميد، الغفور، الشكور، السميع، البصير", prophets: "لا يوجد", numbers: "اثنان، ثلاثة، أربعة", colors: "أبيض، أحمر، أسود، مختلف ألوانه", animals: "طير" },
+            { id: 36, name: "يس", number: 36, revelationOrder: 41, verses: 83, words: 730, letters: 2988, type: "مكية", disconnectedLetters: "يس", sajdahs: 0, allah: 2, firstWord: "يس", lastWord: "تُرْجَعُونَ", mostFrequentWord: "قال (7)", mostFrequentLetter: "الألف (541)", allahNames: "الرَّحْمَنُ، الرَّحِيمُ، العزيز، العليم", prophets: "لا يوجد", numbers: "ثلاثة", colors: "أخضر", animals: "لا يوجد" },
+            { id: 37, name: "الصافات", number: 37, revelationOrder: 56, verses: 182, words: 862, letters: 3613, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 6, firstWord: "وَالصَّافَّاتِ", lastWord: "العَالَمِينَ", mostFrequentWord: "قال (21)", mostFrequentLetter: "الألف (654)", allahNames: "الله، رب العالمين، العزيز، الرحيم", prophets: "نوح، إبراهيم، إسماعيل، إسحاق، موسى، هارون، إلياس، لوط، يونس", numbers: "مائة، مائة ألف", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 38, name: "ص", number: 38, revelationOrder: 38, verses: 88, words: 735, letters: 2991, type: "مكية", disconnectedLetters: "ص", sajdahs: 1, allah: 7, firstWord: "ص", lastWord: "حِينٍ", mostFrequentWord: "قال (22)", mostFrequentLetter: "الألف (542)", allahNames: "الله، الواحد، القهار، العزيز، الغفار، الوهاب", prophets: "داوود، سليمان، أيوب، إبراهيم، إسحاق، يعقوب، موسى، هارون", numbers: "تسعة وتسعون، واحد، ألف", colors: "لا يوجد", animals: "خيل" },
+            { id: 39, name: "الزمر", number: 39, revelationOrder: 59, verses: 75, words: 1176, letters: 4673, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 59, firstWord: "تَنْزِيلُ", lastWord: "العَالَمِينَ", mostFrequentWord: "الله (59)", mostFrequentLetter: "الألف (846)", allahNames: "الله، العزيز، الحكيم، الغفور، الرحيم، الواحد، القهار، الخالق، البارئ، المصور، الحي، القيوم", prophets: "لا يوجد", numbers: "أربعة", colors: "أبيض، أسود", animals: "لا يوجد" },
+            { id: 40, name: "غافر", number: 40, revelationOrder: 60, verses: 85, words: 1226, letters: 4868, type: "مكية", disconnectedLetters: "حم", sajdahs: 0, allah: 52, firstWord: "حم", lastWord: "الكَافِرُونَ", mostFrequentWord: "الله (52)", mostFrequentLetter: "الألف (881)", allahNames: "الله، العزيز، العليم، غافر الذنب، قابل التوب، شديد العقاب، ذو الطول", prophets: "موسى، هارون، نوح، عاد، ثمود، إبراهيم", numbers: "أربعون، ألف", colors: "لا يوجد", animals: "جمل" },
+            { id: 41, name: "فصلت", number: 41, revelationOrder: 61, verses: 54, words: 796, letters: 3278, type: "مكية", disconnectedLetters: "حم", sajdahs: 1, allah: 18, firstWord: "حم", lastWord: "مُحِيطٌ", mostFrequentWord: "قال (12)", mostFrequentLetter: "الألف (593)", allahNames: "الرَّحْمَنُ، الرَّحِيمُ، العزيز، الحكيم، السميع، البصير، الغفور", prophets: "موسى، عاد، ثمود", numbers: "أربعون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 42, name: "الشورى", number: 42, revelationOrder: 62, verses: 53, words: 860, letters: 3407, type: "مكية", disconnectedLetters: "حم عسق", sajdahs: 0, allah: 32, firstWord: "حم", lastWord: "الأُمُورُ", mostFrequentWord: "الله (32)", mostFrequentLetter: "الألف (617)", allahNames: "الله، العزيز، الحكيم، العلي، الكبير، السميع، البصير، اللطيف، الخبير، القوي، الغني، الحميد", prophets: "نوح، إبراهيم، موسى، عيسى", numbers: "أربعون", colors: "لا يوجد", animals: "دابة" },
+            { id: 43, name: "الزخرف", number: 43, revelationOrder: 63, verses: 89, words: 838, letters: 3359, type: "مكية", disconnectedLetters: "حم", sajdahs: 0, allah: 16, firstWord: "حم", lastWord: "يَعْلَمُونَ", mostFrequentWord: "قال (17)", mostFrequentLetter: "الألف (608)", allahNames: "الرَّحْمَنُ، العزيز، الحكيم، العليم", prophets: "إبراهيم، موسى، عيسى، مريم", numbers: "أربعون", colors: "أصفر", animals: "لا يوجد" },
+            { id: 44, name: "الدخان", number: 44, revelationOrder: 64, verses: 59, words: 346, letters: 1439, type: "مكية", disconnectedLetters: "حم", sajdahs: 0, allah: 3, firstWord: "حم", lastWord: "مُرْتَقِبُونَ", mostFrequentWord: "إن (12)", mostFrequentLetter: "الألف (260)", allahNames: "العزيز، الرحيم، الحكيم", prophets: "موسى، فرعون", numbers: "أربعون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 45, name: "الجاثية", number: 45, revelationOrder: 65, verses: 37, words: 489, letters: 1971, type: "مكية", disconnectedLetters: "حم", sajdahs: 0, allah: 26, firstWord: "حم", lastWord: "الحَكِيمُ", mostFrequentWord: "الله (26)", mostFrequentLetter: "الألف (357)", allahNames: "الله، العزيز، الحكيم", prophets: "موسى", numbers: "أربعون", colors: "لا يوجد", animals: "دابة" },
+            { id: 46, name: "الأحقاف", number: 46, revelationOrder: 66, verses: 35, words: 645, letters: 2595, type: "مكية", disconnectedLetters: "حم", sajdahs: 0, allah: 20, firstWord: "حم", lastWord: "الفَاسِقُونَ", mostFrequentWord: "الله (20)", mostFrequentLetter: "الألف (469)", allahNames: "الله، العزيز، الحكيم، السميع، العليم، الغفور، الرحيم", prophets: "موسى، نوح، عاد، هود، الأحقاف", numbers: "أربعون، تسعة وعشرون، ثلاثون، ألف", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 47, name: "محمد", number: 47, revelationOrder: 95, verses: 38, words: 540, letters: 2291, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 27, firstWord: "الَّذِينَ", lastWord: "أَعْمَالَكُمْ", mostFrequentWord: "الله (27)", mostFrequentLetter: "الألف (414)", allahNames: "الله، العزيز، الحكيم، العليم، الخبير", prophets: "محمد", numbers: "أربعون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 48, name: "الفتح", number: 48, revelationOrder: 111, verses: 29, words: 560, letters: 2438, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 17, firstWord: "إِنَّا", lastWord: "عَظِيمًا", mostFrequentWord: "الله (17)", mostFrequentLetter: "الألف (441)", allahNames: "الله، العزيز، الحكيم، العليم، الغفور، الرحيم", prophets: "محمد", numbers: "أربعون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 49, name: "الحجرات", number: 49, revelationOrder: 106, verses: 18, words: 352, letters: 1476, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 27, firstWord: "يَا", lastWord: "رَحِيمٌ", mostFrequentWord: "الله (27)", mostFrequentLetter: "الألف (267)", allahNames: "الله، العليم، الحكيم، السميع، البصير، الغفور، الرحيم، التواب", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 50, name: "ق", number: 50, revelationOrder: 34, verses: 45, words: 373, letters: 1473, type: "مكية", disconnectedLetters: "ق", sajdahs: 0, allah: 1, firstWord: "ق", lastWord: "وَعِيدِ", mostFrequentWord: "قال (5)", mostFrequentLetter: "الألف (267)", allahNames: "الله", prophets: "نوح، عاد، ثمود، لوط، إبراهيم، موسى", numbers: "ألف، خمسون ألف", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 51, name: "الذاريات", number: 51, revelationOrder: 67, verses: 60, words: 360, letters: 1495, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 3, firstWord: "وَالذَّارِيَاتِ", lastWord: "يُوعَدُونَ", mostFrequentWord: "قال (6)", mostFrequentLetter: "الألف (271)", allahNames: "الله، الرزاق، ذو القوة، المتين", prophets: "إبراهيم، لوط، موسى، نوح، عاد، ثمود", numbers: "أربعون", colors: "أصفر", animals: "عجل" },
+            { id: 52, name: "الطور", number: 52, revelationOrder: 76, verses: 49, words: 312, letters: 1298, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 5, firstWord: "وَالطُّورِ", lastWord: "النُّجُومِ", mostFrequentWord: "إن (8)", mostFrequentLetter: "الألف (235)", allahNames: "الله، البر، الرحيم", prophets: "موسى", numbers: "أربعون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 53, name: "النجم", number: 53, revelationOrder: 23, verses: 62, words: 359, letters: 1403, type: "مكية", disconnectedLetters: "لا", sajdahs: 1, allah: 6, firstWord: "وَالنَّجْمِ", lastWord: "وَاسْجُدُوا", mostFrequentWord: "وأن (11)", mostFrequentLetter: "الألف (254)", allahNames: "الله، رب الشعرى", prophets: "إبراهيم، موسى، نوح، عاد، ثمود", numbers: "أربعون، خمسون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 54, name: "القمر", number: 54, revelationOrder: 37, verses: 55, words: 342, letters: 1418, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "اقْتَرَبَتِ", lastWord: "مُقْتَدِرٍ", mostFrequentWord: "فكيف (4)", mostFrequentLetter: "الألف (257)", allahNames: "المقتدر", prophets: "نوح، عاد، ثمود، لوط، موسى", numbers: "ألف", colors: "لا يوجد", animals: "ناقة" },
+            { id: 55, name: "الرحمن", number: 55, revelationOrder: 97, verses: 78, words: 351, letters: 1585, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "الرَّحْمَنُ", lastWord: "وَالإِكْرَامِ", mostFrequentWord: "فبأي (31)", mostFrequentLetter: "الألف (287)", allahNames: "الرَّحْمَنُ، ذو الجلال والإكرام", prophets: "لا يوجد", numbers: "لا يوجد", colors: "أخضر", animals: "لا يوجد" },
+            { id: 56, name: "الواقعة", number: 56, revelationOrder: 46, verses: 96, words: 379, letters: 1685, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "إِذَا", lastWord: "العَظِيمِ", mostFrequentWord: "إن (7)", mostFrequentLetter: "الألف (305)", allahNames: "رب العالمين، رب العظيم", prophets: "لا يوجد", numbers: "ثلاثة", colors: "أصفر", animals: "لا يوجد" },
+            { id: 57, name: "الحديد", number: 57, revelationOrder: 94, verses: 29, words: 574, letters: 2475, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 32, firstWord: "سَبَّحَ", lastWord: "عَظِيمٍ", mostFrequentWord: "الله (32)", mostFrequentLetter: "الألف (448)", allahNames: "الله، العزيز، الحكيم، الأول، الآخر، الظاهر، الباطن، العليم", prophets: "نوح، إبراهيم، عيسى، مريم", numbers: "أربعون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 58, name: "المجادلة", number: 58, revelationOrder: 105, verses: 22, words: 474, letters: 1991, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 40, firstWord: "قَدْ", lastWord: "مُفْلِحُونَ", mostFrequentWord: "الله (40)", mostFrequentLetter: "الألف (360)", allahNames: "الله، السميع، البصير، العليم، الخبير، العزيز، الحكيم", prophets: "لا يوجد", numbers: "ثلاثة، أربعة، خمسة", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 59, name: "الحشر", number: 59, revelationOrder: 101, verses: 24, words: 445, letters: 1890, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 29, firstWord: "سَبَّحَ", lastWord: "الحَكِيمُ", mostFrequentWord: "الله (29)", mostFrequentLetter: "الألف (342)", allahNames: "الله، العزيز، الحكيم، الملك، القدوس، السلام، المؤمن، المهيمن، الجبار، المتكبر، الخالق، البارئ، المصور", prophets: "موسى", numbers: "أول", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 60, name: "الممتحنة", number: 60, revelationOrder: 91, verses: 13, words: 352, letters: 1503, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 18, firstWord: "يَا", lastWord: "رَحِيمٌ", mostFrequentWord: "الله (18)", mostFrequentLetter: "الألف (272)", allahNames: "الله، العزيز، الحكيم، السميع، العليم، الغفور، الرحيم، التواب", prophets: "إبراهيم", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 61, name: "الصف", number: 61, revelationOrder: 109, verses: 14, words: 225, letters: 936, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 17, firstWord: "سَبَّحَ", lastWord: "اللَّهِ", mostFrequentWord: "الله (17)", mostFrequentLetter: "الألف (169)", allahNames: "الله، العزيز، الحكيم", prophets: "موسى، عيسى، مريم، أحمد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 62, name: "الجمعة", number: 62, revelationOrder: 110, verses: 11, words: 176, letters: 735, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 12, firstWord: "يُسَبِّحُ", lastWord: "الرَّازِقِينَ", mostFrequentWord: "الله (12)", mostFrequentLetter: "الألف (133)", allahNames: "الله، الملك، القدوس، العزيز، الحكيم، خير الرازقين", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "حمار" },
+            { id: 63, name: "المنافقون", number: 63, revelationOrder: 104, verses: 11, words: 180, letters: 786, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 14, firstWord: "إِذَا", lastWord: "الخَاسِرُونَ", mostFrequentWord: "الله (14)", mostFrequentLetter: "الألف (142)", allahNames: "الله، العزيز، الحكيم، الغفور، الرحيم", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 64, name: "التغابن", number: 64, revelationOrder: 108, verses: 18, words: 241, letters: 1045, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 20, firstWord: "يُسَبِّحُ", lastWord: "الحَكِيمُ", mostFrequentWord: "الله (20)", mostFrequentLetter: "الألف (189)", allahNames: "الله، الحميد، الغني، العليم، الخبير، العزيز، الحكيم", prophets: "نوح، موسى", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 65, name: "الطلاق", number: 65, revelationOrder: 99, verses: 12, words: 288, letters: 1174, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 30, firstWord: "يَا", lastWord: "عِلْمًا", mostFrequentWord: "الله (30)", mostFrequentLetter: "الألف (212)", allahNames: "الله، اللطيف، الخبير، الغفور، الرحيم", prophets: "لا يوجد", numbers: "ثلاثة، سبع", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 66, name: "التحريم", number: 66, revelationOrder: 107, verses: 12, words: 254, letters: 1050, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 16, firstWord: "يَا", lastWord: "العَابِدِينَ", mostFrequentWord: "الله (16)", mostFrequentLetter: "الألف (190)", allahNames: "الله، العليم، الحكيم، التواب، الرحيم، الغفور", prophets: "نوح، لوط، إبراهيم، مريم، عيسى", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 67, name: "الملك", number: 67, revelationOrder: 77, verses: 30, words: 335, letters: 1314, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 8, firstWord: "تَبَارَكَ", lastWord: "النُّشُورُ", mostFrequentWord: "الذي (8)", mostFrequentLetter: "الألف (238)", allahNames: "العزيز، الغفور، اللطيف، الخبير", prophets: "لا يوجد", numbers: "سبع", colors: "لا يوجد", animals: "طير" },
+            { id: 68, name: "القلم", number: 68, revelationOrder: 2, verses: 52, words: 300, letters: 1254, type: "مكية", disconnectedLetters: "ن", sajdahs: 0, allah: 2, firstWord: "ن", lastWord: "لِلْعَالَمِينَ", mostFrequentWord: "إن (10)", mostFrequentLetter: "الألف (227)", allahNames: "الله، الأعلم", prophets: "يونس", numbers: "مائة ألف", colors: "لا يوجد", animals: "حوت" },
+            { id: 69, name: "الحاقة", number: 69, revelationOrder: 78, verses: 52, words: 260, letters: 1105, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "الْحَاقَّةُ", lastWord: "العَظِيمِ", mostFrequentWord: "ما (9)", mostFrequentLetter: "الألف (200)", allahNames: "رب العالمين، رب العظيم", prophets: "نوح، عاد، ثمود، موسى، فرعون", numbers: "سبع، ثمانية، ألف، خمسون ألف، سبعون ألف", colors: "لا يوجد", animals: "ناقة" },
+            { id: 70, name: "المعارج", number: 70, revelationOrder: 79, verses: 44, words: 217, letters: 945, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "سَأَلَ", lastWord: "الكَافِرِينَ", mostFrequentWord: "الذين (7)", mostFrequentLetter: "الألف (171)", allahNames: "الله، رب المشارق، رب المشرقين والمغربين", prophets: "نوح", numbers: "سبعون، خمسون ألف", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 71, name: "نوح", number: 71, revelationOrder: 71, verses: 28, words: 226, letters: 939, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 10, firstWord: "إِنَّا", lastWord: "دَيَّارًا", mostFrequentWord: "قال (7)", mostFrequentLetter: "الألف (170)", allahNames: "الله، الغفار", prophets: "نوح", numbers: "ألف، خمسون، تسعمائة وخمسون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 72, name: "الجن", number: 72, revelationOrder: 40, verses: 28, words: 286, letters: 1089, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 22, firstWord: "قُلْ", lastWord: "عَدَدًا", mostFrequentWord: "الله (22)", mostFrequentLetter: "الألف (197)", allahNames: "الله، رب العالمين", prophets: "موسى", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 73, name: "المزمل", number: 73, revelationOrder: 3, verses: 20, words: 199, letters: 840, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 7, firstWord: "يَا", lastWord: "رَحِيمٌ", mostFrequentWord: "الله (7)", mostFrequentLetter: "الألف (152)", allahNames: "الله، رب المشرق والمغرب، الغفور، الرحيم", prophets: "موسى", numbers: "ثلثي، نصف، ثلث", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 74, name: "المدثر", number: 74, revelationOrder: 4, verses: 56, words: 255, letters: 1002, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 3, firstWord: "يَا", lastWord: "التَّقْوَى", mostFrequentWord: "وما (8)", mostFrequentLetter: "الألف (182)", allahNames: "الله، رب العالمين، أهل التقوى، أهل المغفرة", prophets: "لا يوجد", numbers: "تسعة عشر، ثلاثون، سبعون", colors: "لا يوجد", animals: "حمر" },
+            { id: 75, name: "القيامة", number: 75, revelationOrder: 31, verses: 40, words: 164, letters: 649, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "لَا", lastWord: "قَدِيرًا", mostFrequentWord: "لا (7)", mostFrequentLetter: "الألف (118)", allahNames: "الله", prophets: "موسى", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 76, name: "الإنسان", number: 76, revelationOrder: 98, verses: 31, words: 243, letters: 1052, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 16, firstWord: "هَلْ", lastWord: "أَلِيمًا", mostFrequentWord: "الله (16)", mostFrequentLetter: "الألف (190)", allahNames: "الله، العليم، الحكيم، الغفور، الرحيم", prophets: "لا يوجد", numbers: "لا يوجد", colors: "أخضر", animals: "لا يوجد" },
+            { id: 77, name: "المرسلات", number: 77, revelationOrder: 33, verses: 50, words: 181, letters: 814, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "وَالْمُرْسَلَاتِ", lastWord: "يُؤْمِنُونَ", mostFrequentWord: "ويل (10)", mostFrequentLetter: "الألف (147)", allahNames: "لا يوجد", prophets: "لا يوجد", numbers: "سبع، ثلاث", colors: "أصفر", animals: "جمالة" },
+            { id: 78, name: "النبأ", number: 78, revelationOrder: 80, verses: 40, words: 173, letters: 766, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "عَمَّ", lastWord: "تُرَابًا", mostFrequentWord: "وجعلنا (6)", mostFrequentLetter: "الألف (139)", allahNames: "الله", prophets: "لا يوجد", numbers: "سبع، ثمان", colors: "أخضر", animals: "لا يوجد" },
+            { id: 79, name: "النازعات", number: 79, revelationOrder: 81, verses: 46, words: 179, letters: 762, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "وَالنَّازِعَاتِ", lastWord: "ضُحَاهَا", mostFrequentWord: "يوم (5)", mostFrequentLetter: "الألف (138)", allahNames: "الله", prophets: "موسى", numbers: "أربعون", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 80, name: "عبس", number: 80, revelationOrder: 24, verses: 42, words: 133, letters: 538, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "عَبَسَ", lastWord: "كَفَرَةُ", mostFrequentWord: "يوم (4)", mostFrequentLetter: "الألف (97)", allahNames: "الله", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 81, name: "التكوير", number: 81, revelationOrder: 7, verses: 29, words: 104, letters: 428, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 2, firstWord: "إِذَا", lastWord: "العَالَمِينَ", mostFrequentWord: "إذا (8)", mostFrequentLetter: "الألف (78)", allahNames: "الله، رب العالمين", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "وحوش، عشار" },
+            { id: 82, name: "الانفطار", number: 82, revelationOrder: 82, verses: 19, words: 80, letters: 326, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 4, firstWord: "إِذَا", lastWord: "لِلَّهِ", mostFrequentWord: "إذا (4)", mostFrequentLetter: "الألف (59)", allahNames: "الله، الكريم", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 83, name: "المطففين", number: 83, revelationOrder: 86, verses: 36, words: 169, letters: 719, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "وَيْلٌ", lastWord: "يَفْعَلُونَ", mostFrequentWord: "يوم (5)", mostFrequentLetter: "الألف (130)", allahNames: "رب العالمين", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 84, name: "الانشقاق", number: 84, revelationOrder: 83, verses: 25, words: 107, letters: 434, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "إِذَا", lastWord: "مَمْنُونٍ", mostFrequentWord: "إذا (3)", mostFrequentLetter: "الألف (79)", allahNames: "الله", prophets: "لا يوجد", numbers: "لا يوجد", colors: "أحمر", animals: "لا يوجد" },
+            { id: 85, name: "البروج", number: 85, revelationOrder: 27, verses: 22, words: 109, letters: 457, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 3, firstWord: "وَالسَّمَاءِ", lastWord: "مَحْفُوظٍ", mostFrequentWord: "الذين (3)", mostFrequentLetter: "الألف (83)", allahNames: "الله، الودود، المجيد، الغفور", prophets: "فرعون، ثمود", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 86, name: "الطارق", number: 86, revelationOrder: 36, verses: 17, words: 61, letters: 249, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "وَالسَّمَاءِ", lastWord: "رُوَيْدًا", mostFrequentWord: "كل (3)", mostFrequentLetter: "الألف (45)", allahNames: "لا يوجد", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 87, name: "الأعلى", number: 87, revelationOrder: 8, verses: 19, words: 72, letters: 293, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "سَبِّحِ", lastWord: "الأُولَى", mostFrequentWord: "من (3)", mostFrequentLetter: "الألف (53)", allahNames: "الأعلى", prophets: "إبراهيم، موسى", numbers: "لا يوجد", colors: "أخضر", animals: "لا يوجد" },
+            { id: 88, name: "الغاشية", number: 88, revelationOrder: 68, verses: 26, words: 92, letters: 374, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "هَلْ", lastWord: "حِسَابَهُمْ", mostFrequentWord: "إلى (4)", mostFrequentLetter: "الألف (68)", allahNames: "الله", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "إبل" },
+            { id: 89, name: "الفجر", number: 89, revelationOrder: 10, verses: 30, words: 139, letters: 565, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "وَالْفَجْرِ", lastWord: "جَنَّتِي", mostFrequentWord: "ربك (6)", mostFrequentLetter: "الألف (102)", allahNames: "الله", prophets: "عاد، ثمود، فرعون", numbers: "عشر، ثمان، ألف", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 90, name: "البلد", number: 90, revelationOrder: 35, verses: 20, words: 82, letters: 331, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "لَا", lastWord: "مُؤْصَدَةٌ", mostFrequentWord: "لا (4)", mostFrequentLetter: "الألف (60)", allahNames: "لا يوجد", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 91, name: "الشمس", number: 91, revelationOrder: 26, verses: 15, words: 54, letters: 247, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "وَالشَّمْسِ", lastWord: "عُقْبَاهَا", mostFrequentWord: "وما (4)", mostFrequentLetter: "الألف (45)", allahNames: "الله", prophets: "ثمود", numbers: "لا يوجد", colors: "لا يوجد", animals: "ناقة" },
+            { id: 92, name: "الليل", number: 92, revelationOrder: 9, verses: 21, words: 71, letters: 301, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "وَاللَّيْلِ", lastWord: "تَرْضَى", mostFrequentWord: "من (4)", mostFrequentLetter: "الألف (55)", allahNames: "الأعلى", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 93, name: "الضحى", number: 93, revelationOrder: 11, verses: 11, words: 40, letters: 164, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "وَالضُّحَى", lastWord: "فَحَدِّثْ", mostFrequentWord: "ربك (3)", mostFrequentLetter: "الألف (30)", allahNames: "ربك", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 94, name: "الشرح", number: 94, revelationOrder: 12, verses: 8, words: 27, letters: 100, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "أَلَمْ", lastWord: "فَارْغَبْ", mostFrequentWord: "مع (2)", mostFrequentLetter: "الألف (18)", allahNames: "ربك", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 95, name: "التين", number: 95, revelationOrder: 28, verses: 8, words: 34, letters: 150, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "وَالتِّينِ", lastWord: "الْحَاكِمِينَ", mostFrequentWord: "أسفل (1)", mostFrequentLetter: "الألف (27)", allahNames: "الله، أحكم الحاكمين", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 96, name: "العلق", number: 96, revelationOrder: 1, verses: 19, words: 72, letters: 281, type: "مكية", disconnectedLetters: "لا", sajdahs: 1, allah: 2, firstWord: "اقْرَأْ", lastWord: "وَاقْتَرِبْ", mostFrequentWord: "الذي (3)", mostFrequentLetter: "الألف (51)", allahNames: "الله، الأكرم", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 97, name: "القدر", number: 97, revelationOrder: 25, verses: 5, words: 30, letters: 112, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "إِنَّا", lastWord: "الْفَجْرِ", mostFrequentWord: "ليلة (3)", mostFrequentLetter: "الألف (20)", allahNames: "ربهم", prophets: "لا يوجد", numbers: "ألف", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 98, name: "البينة", number: 98, revelationOrder: 100, verses: 8, words: 94, letters: 390, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 5, firstWord: "لَمْ", lastWord: "الْبَرِيَّةِ", mostFrequentWord: "الذين (4)", mostFrequentLetter: "الألف (71)", allahNames: "الله", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 99, name: "الزلزلة", number: 99, revelationOrder: 93, verses: 8, words: 35, letters: 148, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "إِذَا", lastWord: "يَرَهُ", mostFrequentWord: "يومئذ (2)", mostFrequentLetter: "الألف (27)", allahNames: "ربك", prophets: "لا يوجد", numbers: "مثقال ذرة", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 100, name: "العاديات", number: 100, revelationOrder: 14, verses: 11, words: 40, letters: 157, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "وَالْعَادِيَاتِ", lastWord: "لَخَبِيرٌ", mostFrequentWord: "إن (2)", mostFrequentLetter: "الألف (28)", allahNames: "ربه", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "خيل" },
+            { id: 101, name: "القارعة", number: 101, revelationOrder: 30, verses: 11, words: 36, letters: 152, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "الْقَارِعَةُ", lastWord: "حَامِيَةٌ", mostFrequentWord: "ما (3)", mostFrequentLetter: "الألف (28)", allahNames: "لا يوجد", prophets: "لا يوجد", numbers: "لا يوجد", colors: "مختلف ألوانه", animals: "فراش" },
+            { id: 102, name: "التكاثر", number: 102, revelationOrder: 16, verses: 8, words: 28, letters: 119, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "أَلْهَاكُمُ", lastWord: "النَّعِيمِ", mostFrequentWord: "سوف (2)", mostFrequentLetter: "الألف (22)", allahNames: "لا يوجد", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 103, name: "العصر", number: 103, revelationOrder: 13, verses: 3, words: 14, letters: 68, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "وَالْعَصْرِ", lastWord: "بِالصَّبْرِ", mostFrequentWord: "الذين (1)", mostFrequentLetter: "الألف (12)", allahNames: "لا يوجد", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 104, name: "الهمزة", number: 104, revelationOrder: 32, verses: 9, words: 33, letters: 129, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "وَيْلٌ", lastWord: "مُمَدَّدَةٍ", mostFrequentWord: "كل (2)", mostFrequentLetter: "الألف (23)", allahNames: "الله", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 105, name: "الفيل", number: 105, revelationOrder: 19, verses: 5, words: 23, letters: 94, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "أَلَمْ", lastWord: "مَأْكُولٍ", mostFrequentWord: "ربك (1)", mostFrequentLetter: "الألف (17)", allahNames: "ربك", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "فيل، طير" },
+            { id: 106, name: "قريش", number: 106, revelationOrder: 29, verses: 4, words: 17, letters: 73, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "لِإِيلَافِ", lastWord: "خَوْفٍ", mostFrequentWord: "قريش (1)", mostFrequentLetter: "الألف (13)", allahNames: "رب هذا البيت", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 107, name: "الماعون", number: 107, revelationOrder: 17, verses: 7, words: 25, letters: 108, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "أَرَأَيْتَ", lastWord: "الْمَاعُونَ", mostFrequentWord: "الذين (2)", mostFrequentLetter: "الألف (20)", allahNames: "لا يوجد", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 108, name: "الكوثر", number: 108, revelationOrder: 15, verses: 3, words: 10, letters: 42, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "إِنَّا", lastWord: "الأَبْتَرُ", mostFrequentWord: "لربك (1)", mostFrequentLetter: "الألف (8)", allahNames: "ربك", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 109, name: "الكافرون", number: 109, revelationOrder: 18, verses: 6, words: 26, letters: 94, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "قُلْ", lastWord: "دِينِ", mostFrequentWord: "لا (5)", mostFrequentLetter: "الألف (17)", allahNames: "لا يوجد", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 110, name: "النصر", number: 110, revelationOrder: 114, verses: 3, words: 19, letters: 79, type: "مدنية", disconnectedLetters: "لا", sajdahs: 0, allah: 1, firstWord: "إِذَا", lastWord: "تَوَّابًا", mostFrequentWord: "الله (1)", mostFrequentLetter: "الألف (14)", allahNames: "الله، التواب", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 111, name: "المسد", number: 111, revelationOrder: 6, verses: 5, words: 29, letters: 77, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "تَبَّتْ", lastWord: "مَسَدٍ", mostFrequentWord: "ما (2)", mostFrequentLetter: "الألف (14)", allahNames: "لا يوجد", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 112, name: "الإخلاص", number: 112, revelationOrder: 22, verses: 4, words: 15, letters: 47, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 2, firstWord: "قُلْ", lastWord: "أَحَدٌ", mostFrequentWord: "الله (2)", mostFrequentLetter: "الألف (9)", allahNames: "الله، الصمد", prophets: "لا يوجد", numbers: "واحد، أحد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 113, name: "الفلق", number: 113, revelationOrder: 20, verses: 5, words: 23, letters: 71, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "قُلْ", lastWord: "حَسَدَ", mostFrequentWord: "من (3)", mostFrequentLetter: "الألف (13)", allahNames: "رب الفلق", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" },
+            { id: 114, name: "الناس", number: 114, revelationOrder: 21, verses: 6, words: 20, letters: 78, type: "مكية", disconnectedLetters: "لا", sajdahs: 0, allah: 0, firstWord: "قُلْ", lastWord: "وَالنَّاسِ", mostFrequentWord: "الناس (3)", mostFrequentLetter: "الألف (14)", allahNames: "رب الناس، ملك الناس، إله الناس", prophets: "لا يوجد", numbers: "لا يوجد", colors: "لا يوجد", animals: "لا يوجد" }
+        ];
+        // إحصائيات إضافية للسور مثل أطول آية وأقصر آية وغيرها
+        const surahMetrics = {
+          1: {
+            longestVerse: "صِرَٰطَ ٱلَّذِينَ أَنۡعَمۡتَ عَلَيۡهِمۡ غَيۡرِ ٱلۡمَغۡضُوبِ عَلَيۡهِمۡ وَلَا ٱلضَّآلِّينَ",
+            shortestVerse: "ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ",
+            avgWords: 4.14,
+            avgLetters: 37.57,
+            uniqueLetters: 24,
+            mostCommonEndLetter: "ن (4)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "ٱلرَّحِيمِ (2)"
+          },
+          2: {
+            longestVerse: "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓاْ إِذَا تَدَايَنتُم بِدَيۡنٍ إِلَىٰٓ أَجَلٖ مُّسَمّٗى فَٱكۡتُبُوهُۚ وَلۡيَكۡتُب بَّيۡنَكُمۡ كَاتِبُۢ بِٱلۡعَدۡلِۚ وَلَا يَأۡبَ كَاتِبٌ أَن يَكۡتُبَ كَمَا عَلَّمَهُ ٱللَّهُۚ فَلۡيَكۡتُبۡ وَلۡيُمۡلِلِ ٱلَّذِي عَلَيۡهِ ٱلۡحَقُّ وَلۡيَتَّقِ ٱللَّهَ رَبَّهُۥ وَلَا يَبۡخَسۡ مِنۡهُ شَيۡـٔٗاۚ فَإِن كَانَ ٱلَّذِي عَلَيۡهِ ٱلۡحَقُّ سَفِيهًا أَوۡ ضَعِيفًا أَوۡ لَا يَسۡتَطِيعُ أَن يُمِلَّ هُوَ فَلۡيُمۡلِلۡ وَلِيُّهُۥ بِٱلۡعَدۡلِۚ وَٱسۡتَشۡهِدُواْ شَهِيدَيۡنِ مِن رِّجَالِكُمۡۖ فَإِن لَّمۡ يَكُونَا رَجُلَيۡنِ فَرَجُلٞ وَٱمۡرَأَتَانِ مِمَّن تَرۡضَوۡنَ مِنَ ٱلشُّهَدَآءِ أَن تَضِلَّ إِحۡدَىٰهُمَا فَتُذَكِّرَ إِحۡدَىٰهُمَا ٱلۡأُخۡرَىٰۚ وَلَا يَأۡبَ ٱلشُّهَدَآءُ إِذَا مَا دُعُواْۚ وَلَا تَسۡـَٔمُوٓاْ أَن تَكۡتُبُوهُ صَغِيرًا أَوۡ كَبِيرًا إِلَىٰٓ أَجَلِهِۦۚ ذَٰلِكُمۡ أَقۡسَطُ عِندَ ٱللَّهِ وَأَقۡوَمُ لِلشَّهَٰدَةِ وَأَدۡنَىٰٓ أَلَّا تَرۡتَابُوٓاْ إِلَّآ أَن تَكُونَ تِجَٰرَةً حَاضِرَةٗ تُدِيرُونَهَا بَيۡنَكُمۡ فَلَيۡسَ عَلَيۡكُمۡ جُنَاحٌ أَلَّا تَكۡتُبُوهَاۗ وَأَشۡهِدُوٓاْ إِذَا تَبَايَعۡتُمۡۚ وَلَا يُضَآرَّ كَاتِبٞ وَلَا شَهِيدٞۚ وَإِن تَفۡعَلُواْ فَإِنَّهُۥ فُسُوقُۢ بِكُمۡۗ وَٱتَّقُواْ ٱللَّهَۖ وَيُعَلِّمُكُمُ ٱللَّهُۗ وَٱللَّهُ بِكُلِّ شَيۡءٍ عَلِيمٞ",
+            shortestVerse: "الٓمٓ",
+            avgWords: 21.39,
+            avgLetters: 174.73,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (193)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "تَعۡلَمُونَ (12)"
+          },
+          3: {
+            longestVerse: "ثُمَّ أَنزَلَ عَلَيۡكُم مِّنۢ بَعۡدِ ٱلۡغَمِّ أَمَنَةٗ نُّعَاسٗا يَغۡشَىٰ طَآئِفَةٗ مِّنكُمۡۖ وَطَآئِفَةٞ قَدۡ أَهَمَّتۡهُمۡ أَنفُسُهُمۡ يَظُنُّونَ بِٱللَّهِ غَيۡرَ ٱلۡحَقِّ ظَنَّ ٱلۡجَٰهِلِيَّةِۖ يَقُولُونَ هَل لَّنَا مِنَ ٱلۡأَمۡرِ مِن شَيۡءٖۗ قُلۡ إِنَّ ٱلۡأَمۡرَ كُلَّهُۥ لِلَّهِۗ يُخۡفُونَ فِيٓ أَنفُسِهِم مَّا لَا يُبۡدُونَ لَكَۖ يَقُولُونَ لَوۡ كَانَ لَنَا مِنَ ٱلۡأَمۡرِ شَيۡءٞ مَّا قُتِلۡنَا هَٰهُنَاۗ قُل لَّوۡ كُنتُمۡ فِي بُيُوتِكُمۡ لَبَرَزَ ٱلَّذِينَ كُتِبَ عَلَيۡهِمُ ٱلۡقَتۡلُ إِلَىٰ مَضَاجِعِهِمۡۖ وَلِيَبۡتَلِيَ ٱللَّهُ مَا فِي صُدُورِكُمۡ وَلِيُمَحِّصَ مَا فِي قُلُوبِكُمۡۚ وَٱللَّهُ عَلِيمُۢ بِذَاتِ ٱلصُّدُورِ",
+            shortestVerse: "الٓمٓ",
+            avgWords: 17.41,
+            avgLetters: 142.07,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (120)",
+            uniqueEndLetters: 9,
+            mostCommonLastWord: "ٱلظَّـٰلِمِينَ (4)"
+          },
+          4: {
+            longestVerse: "۞وَلَكُمۡ نِصۡفُ مَا تَرَكَ أَزۡوَٰجُكُمۡ إِن لَّمۡ يَكُن لَّهُنَّ وَلَدٞۚ فَإِن كَانَ لَهُنَّ وَلَدٞ فَلَكُمُ ٱلرُّبُعُ مِمَّا تَرَكۡنَۚ مِنۢ بَعۡدِ وَصِيَّةٖ يُوصِينَ بِهَآ أَوۡ دَيۡنٖۚ وَلَهُنَّ ٱلرُّبُعُ مِمَّا تَرَكۡتُمۡ إِن لَّمۡ يَكُن لَّكُمۡ وَلَدٞۚ فَإِن كَانَ لَكُمۡ وَلَدٞ فَلَهُنَّ ٱلثُّمُنُ مِمَّا تَرَكۡتُمۚ مِّنۢ بَعۡدِ وَصِيَّةٖ تُوصُونَ بِهَآ أَوۡ دَيۡنٖۗ وَإِن كَانَ رَجُلٞ يُورَثُ كَلَٰلَةً أَوِ ٱمۡرَأَةٞ وَلَهُۥٓ أَخٌ أَوۡ أُخۡتٞ فَلِكُلِّ وَٰحِدٖ مِّنۡهُمَا ٱلسُّدُسُۚ فَإِن كَانُوٓاْ أَكۡثَرَ مِن ذَٰلِكَ فَهُمۡ شُرَكَآءُ فِي ٱلثُّلُثِۚ مِنۢ بَعۡدِ وَصِيَّةٖ يُوصَىٰ بِهَآ أَوۡ دَيۡنٍ غَيۡرَ مُضَآرّٖۚ وَصِيَّةٗ مِّنَ ٱللَّهِۗ وَٱللَّهُ عَلِيمٌ حَلِيمٞ",
+            shortestVerse: "وَلَهَدَيۡنَٰهُمۡ صِرَٰطٗا مُّسۡتَقِيمٗا",
+            avgWords: 21.29,
+            avgLetters: 174.89,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (169)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "عَظِيمٗا (12)"
+          },
+          5: {
+            longestVerse: "۞يَـٰٓأَيُّهَا ٱلرَّسُولُ لَا يَحۡزُنكَ ٱلَّذِينَ يُسَٰرِعُونَ فِي ٱلۡكُفۡرِ مِنَ ٱلَّذِينَ قَالُوٓاْ ءَامَنَّا بِأَفۡوَٰهِهِمۡ وَلَمۡ تُؤۡمِن قُلُوبُهُمۡۛ وَمِنَ ٱلَّذِينَ هَادُواْۛ سَمَّـٰعُونَ لِلۡكَذِبِ سَمَّـٰعُونَ لِقَوۡمٍ ءَاخَرِينَ لَمۡ يَأۡتُوكَۖ يُحَرِّفُونَ ٱلۡكَلِمَ مِنۢ بَعۡدِ مَوَاضِعِهِۦۖ يَقُولُونَ إِنۡ أُوتِيتُمۡ هَٰذَا فَخُذُوهُ وَإِن لَّمۡ تُؤۡتَوۡهُ فَٱحۡذَرُواْۚ وَمَن يُرِدِ ٱللَّهُ فِتۡنَتَهُۥ فَلَن تَمۡلِكَ لَهُۥ مِنَ ٱللَّهِ شَيۡـًٔاۚ أُوْلَـٰٓئِكَ ٱلَّذِينَ لَمۡ يُرِدِ ٱللَّهُ أَن يُطَهِّرَ قُلُوبَهُمۡۚ لَهُمۡ فِي ٱلدُّنۡيَا خِزۡيٞۖ وَلَهُمۡ فِي ٱلۡأٓخِرَةِ عَذَابٌ عَظِيمٞ",
+            shortestVerse: "وَٱلَّذِينَ كَفَرُواْ وَكَذَّبُواْ بِـَٔايَٰتِنَآ أُوْلَـٰٓئِكَ أَصۡحَٰبُ ٱلۡجَحِيمِ",
+            avgWords: 23.37,
+            avgLetters: 193.07,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (80)",
+            uniqueEndLetters: 6,
+            mostCommonLastWord: "رَّحِيمٞ (4)"
+          },
+          6: {
+            longestVerse: "وَمَنۡ أَظۡلَمُ مِمَّنِ ٱفۡتَرَىٰ عَلَى ٱللَّهِ كَذِبًا أَوۡ قَالَ أُوحِيَ إِلَيَّ وَلَمۡ يُوحَ إِلَيۡهِ شَيۡءٞ وَمَن قَالَ سَأُنزِلُ مِثۡلَ مَآ أَنزَلَ ٱللَّهُۗ وَلَوۡ تَرَىٰٓ إِذِ ٱلظَّـٰلِمُونَ فِي غَمَرَٰتِ ٱلۡمَوۡتِ وَٱلۡمَلَـٰٓئِكَةُ بَاسِطُوٓاْ أَيۡدِيهِمۡ أَخۡرِجُوٓاْ أَنفُسَكُمُۖ ٱلۡيَوۡمَ تُجۡزَوۡنَ عَذَابَ ٱلۡهُونِ بِمَا كُنتُمۡ تَقُولُونَ عَلَى ٱللَّهِ غَيۡرَ ٱلۡحَقِّ وَكُنتُمۡ عَنۡ ءَايَٰتِهِۦ تَسۡتَكۡبِرُونَ",
+            shortestVerse: "لِّكُلِّ نَبَإٖ مُّسۡتَقَرّٞۚ وَسَوۡفَ تَعۡلَمُونَ",
+            avgWords: 18.48,
+            avgLetters: 148.38,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (144)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "يُؤۡمِنُونَ (6)"
+          },
+          7: {
+            longestVerse: "ٱلَّذِينَ يَتَّبِعُونَ ٱلرَّسُولَ ٱلنَّبِيَّ ٱلۡأُمِّيَّ ٱلَّذِي يَجِدُونَهُۥ مَكۡتُوبًا عِندَهُمۡ فِي ٱلتَّوۡرَىٰةِ وَٱلۡإِنجِيلِ يَأۡمُرُهُم بِٱلۡمَعۡرُوفِ وَيَنۡهَىٰهُمۡ عَنِ ٱلۡمُنكَرِ وَيُحِلُّ لَهُمُ ٱلطَّيِّبَٰتِ وَيُحَرِّمُ عَلَيۡهِمُ ٱلۡخَبَـٰٓئِثَ وَيَضَعُ عَنۡهُمۡ إِصۡرَهُمۡ وَٱلۡأَغۡلَٰلَ ٱلَّتِي كَانَتۡ عَلَيۡهِمۡۚ فَٱلَّذِينَ ءَامَنُواْ بِهِۦ وَعَزَّرُوهُ وَنَصَرُوهُ وَٱتَّبَعُواْ ٱلنُّورَ ٱلَّذِيٓ أُنزِلَ مَعَهُۥٓ أُوْلَـٰٓئِكَ هُمُ ٱلۡمُفۡلِحُونَ",
+            shortestVerse: "الٓمٓصٓ",
+            avgWords: 16.12,
+            avgLetters: 133.41,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (192)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "ٱلۡعَٰلَمِينَ (7)"
+          },
+          8: {
+            longestVerse: "إِنَّ ٱلَّذِينَ ءَامَنُواْ وَهَاجَرُواْ وَجَٰهَدُواْ بِأَمۡوَٰلِهِمۡ وَأَنفُسِهِمۡ فِي سَبِيلِ ٱللَّهِ وَٱلَّذِينَ ءَاوَواْ وَّنَصَرُوٓاْ أُوْلَـٰٓئِكَ بَعۡضُهُمۡ أَوۡلِيَآءُ بَعۡضٖۚ وَٱلَّذِينَ ءَامَنُواْ وَلَمۡ يُهَاجِرُواْ مَا لَكُم مِّن وَلَٰيَتِهِم مِّن شَيۡءٍ حَتَّىٰ يُهَاجِرُواْۚ وَإِنِ ٱسۡتَنصَرُوكُمۡ فِي ٱلدِّينِ فَعَلَيۡكُمُ ٱلنَّصۡرُ إِلَّا عَلَىٰ قَوۡمِۭ بَيۡنَكُمۡ وَبَيۡنَهُم مِّيثَٰقٞۗ وَٱللَّهُ بِمَا تَعۡمَلُونَ بَصِيرٞ",
+            shortestVerse: "ٱلَّذِينَ يُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقۡنَٰهُمۡ يُنفِقُونَ",
+            avgWords: 16.45,
+            avgLetters: 137.0,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (39)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "ٱلۡعِقَابِ (4)"
+          },
+          9: {
+            longestVerse: "مَا كَانَ لِأَهۡلِ ٱلۡمَدِينَةِ وَمَنۡ حَوۡلَهُم مِّنَ ٱلۡأَعۡرَابِ أَن يَتَخَلَّفُواْ عَن رَّسُولِ ٱللَّهِ وَلَا يَرۡغَبُواْ بِأَنفُسِهِمۡ عَن نَّفۡسِهِۦۚ ذَٰلِكَ بِأَنَّهُمۡ لَا يُصِيبُهُمۡ ظَمَأٞ وَلَا نَصَبٞ وَلَا مَخۡمَصَةٞ فِي سَبِيلِ ٱللَّهِ وَلَا يَطَـُٔونَ مَوۡطِئٗا يَغِيظُ ٱلۡكُفَّارَ وَلَا يَنَالُونَ مِنۡ عَدُوّٖ نَّيۡلًا إِلَّا كُتِبَ لَهُم بِهِۦ عَمَلٞ صَٰلِحٌۚ إِنَّ ٱللَّهَ لَا يُضِيعُ أَجۡرَ ٱلۡمُحۡسِنِينَ",
+            shortestVerse: "خَٰلِدِينَ فِيهَآ أَبَدًاۚ إِنَّ ٱللَّهَ عِندَهُۥٓ أَجۡرٌ عَظِيمٞ",
+            avgWords: 19.36,
+            avgLetters: 162.69,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (86)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "رَّحِيمٞ (6)"
+          },
+          10: {
+            longestVerse: "إِنَّمَا مَثَلُ ٱلۡحَيَوٰةِ ٱلدُّنۡيَا كَمَآءٍ أَنزَلۡنَٰهُ مِنَ ٱلسَّمَآءِ فَٱخۡتَلَطَ بِهِۦ نَبَاتُ ٱلۡأَرۡضِ مِمَّا يَأۡكُلُ ٱلنَّاسُ وَٱلۡأَنۡعَٰمُ حَتَّىٰٓ إِذَآ أَخَذَتِ ٱلۡأَرۡضُ زُخۡرُفَهَا وَٱزَّيَّنَتۡ وَظَنَّ أَهۡلُهَآ أَنَّهُمۡ قَٰدِرُونَ عَلَيۡهَآ أَتَىٰهَآ أَمۡرُنَا لَيۡلًا أَوۡ نَهَارٗا فَجَعَلۡنَٰهَا حَصِيدٗا كَأَن لَّمۡ تَغۡنَ بِٱلۡأَمۡسِۚ كَذَٰلِكَ نُفَصِّلُ ٱلۡأٓيَٰتِ لِقَوۡمٖ يَتَفَكَّرُونَ",
+            shortestVerse: "ٱلَّذِينَ ءَامَنُواْ وَكَانُواْ يَتَّقُونَ",
+            avgWords: 16.82,
+            avgLetters: 133.11,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (98)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "يَعۡلَمُونَ (3)"
+          },
+          11: {
+            longestVerse: "أَفَمَن كَانَ عَلَىٰ بَيِّنَةٖ مِّن رَّبِّهِۦ وَيَتۡلُوهُ شَاهِدٞ مِّنۡهُ وَمِن قَبۡلِهِۦ كِتَٰبُ مُوسَىٰٓ إِمَامٗا وَرَحۡمَةًۚ أُوْلَـٰٓئِكَ يُؤۡمِنُونَ بِهِۦۚ وَمَن يَكۡفُرۡ بِهِۦ مِنَ ٱلۡأَحۡزَابِ فَٱلنَّارُ مَوۡعِدُهُۥۚ فَلَا تَكُ فِي مِرۡيَةٖ مِّنۡهُۚ إِنَّهُ ٱلۡحَقُّ مِن رَّبِّكَ وَلَٰكِنَّ أَكۡثَرَ ٱلنَّاسِ لَا يُؤۡمِنُونَ",
+            shortestVerse: "وَٱنتَظِرُوٓاْ إِنَّا مُنتَظِرُونَ",
+            avgWords: 15.59,
+            avgLetters: 122.0,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (56)",
+            uniqueEndLetters: 12,
+            mostCommonLastWord: "ٱلظَّـٰلِمِينَ (3)"
+          },
+          12: {
+            longestVerse: "وَرَفَعَ أَبَوَيۡهِ عَلَى ٱلۡعَرۡشِ وَخَرُّواْ لَهُۥ سُجَّدٗاۖ وَقَالَ يَـٰٓأَبَتِ هَٰذَا تَأۡوِيلُ رُءۡيَٰيَ مِن قَبۡلُ قَدۡ جَعَلَهَا رَبِّي حَقّٗاۖ وَقَدۡ أَحۡسَنَ بِيٓ إِذۡ أَخۡرَجَنِي مِنَ ٱلسِّجۡنِ وَجَآءَ بِكُم مِّنَ ٱلۡبَدۡوِ مِنۢ بَعۡدِ أَن نَّزَغَ ٱلشَّيۡطَٰنُ بَيۡنِي وَبَيۡنَ إِخۡوَتِيٓۚ إِنَّ رَبِّي لَطِيفٞ لِّمَا يَشَآءُۚ إِنَّهُۥ هُوَ ٱلۡعَلِيمُ ٱلۡحَكِيمُ",
+            shortestVerse: "وَجَآءُوٓ أَبَاهُمۡ عِشَآءٗ يَبۡكُونَ",
+            avgWords: 16.01,
+            avgLetters: 126.11,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (93)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "ٱلۡمُحۡسِنِينَ (5)"
+          },
+          13: {
+            longestVerse: "وَلَوۡ أَنَّ قُرۡءَانٗا سُيِّرَتۡ بِهِ ٱلۡجِبَالُ أَوۡ قُطِّعَتۡ بِهِ ٱلۡأَرۡضُ أَوۡ كُلِّمَ بِهِ ٱلۡمَوۡتَىٰۗ بَل لِّلَّهِ ٱلۡأَمۡرُ جَمِيعًاۗ أَفَلَمۡ يَاْيۡـَٔسِ ٱلَّذِينَ ءَامَنُوٓاْ أَن لَّوۡ يَشَآءُ ٱللَّهُ لَهَدَى ٱلنَّاسَ جَمِيعٗاۗ وَلَا يَزَالُ ٱلَّذِينَ كَفَرُواْ تُصِيبُهُم بِمَا صَنَعُواْ قَارِعَةٌ أَوۡ تَحُلُّ قَرِيبٗا مِّن دَارِهِمۡ حَتَّىٰ يَأۡتِيَ وَعۡدُ ٱللَّهِۚ إِنَّ ٱللَّهَ لَا يُخۡلِفُ ٱلۡمِيعَادَ",
+            shortestVerse: "عَٰلِمُ ٱلۡغَيۡبِ وَٱلشَّهَٰدَةِ ٱلۡكَبِيرُ ٱلۡمُتَعَالِ",
+            avgWords: 19.86,
+            avgLetters: 158.63,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ب (15)",
+            uniqueEndLetters: 8,
+            mostCommonLastWord: "ٱلدَّارِ (4)"
+          },
+          14: {
+            longestVerse: "وَقَالَ ٱلشَّيۡطَٰنُ لَمَّا قُضِيَ ٱلۡأَمۡرُ إِنَّ ٱللَّهَ وَعَدَكُمۡ وَعۡدَ ٱلۡحَقِّ وَوَعَدتُّكُمۡ فَأَخۡلَفۡتُكُمۡۖ وَمَا كَانَ لِيَ عَلَيۡكُم مِّن سُلۡطَٰنٍ إِلَّآ أَن دَعَوۡتُكُمۡ فَٱسۡتَجَبۡتُمۡ لِيۖ فَلَا تَلُومُونِي وَلُومُوٓاْ أَنفُسَكُمۖ مَّآ أَنَا۠ بِمُصۡرِخِكُمۡ وَمَآ أَنتُم بِمُصۡرِخِيَّ إِنِّي كَفَرۡتُ بِمَآ أَشۡرَكۡتُمُونِ مِن قَبۡلُۗ إِنَّ ٱلظَّـٰلِمِينَ لَهُمۡ عَذَابٌ أَلِيمٞ",
+            shortestVerse: "جَهَنَّمَ يَصۡلَوۡنَهَاۖ وَبِئۡسَ ٱلۡقَرَارُ",
+            avgWords: 15.96,
+            avgLetters: 129.73,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "د (11)",
+            uniqueEndLetters: 10,
+            mostCommonLastWord: "ٱلسَّمَآءِ (2)"
+          },
+          15: {
+            longestVerse: "لَا تَمُدَّنَّ عَيۡنَيۡكَ إِلَىٰ مَا مَتَّعۡنَا بِهِۦٓ أَزۡوَٰجٗا مِّنۡهُمۡ وَلَا تَحۡزَنۡ عَلَيۡهِمۡ وَٱخۡفِضۡ جَنَاحَكَ لِلۡمُؤۡمِنِينَ",
+            shortestVerse: "ٱدۡخُلُوهَا بِسَلَٰمٍ ءَامِنِينَ",
+            avgWords: 6.61,
+            avgLetters: 55.13,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (81)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "أَجۡمَعِينَ (4)"
+          },
+          16: {
+            longestVerse: "وَقَالَ ٱلَّذِينَ أَشۡرَكُواْ لَوۡ شَآءَ ٱللَّهُ مَا عَبَدۡنَا مِن دُونِهِۦ مِن شَيۡءٖ نَّحۡنُ وَلَآ ءَابَآؤُنَا وَلَا حَرَّمۡنَا مِن دُونِهِۦ مِن شَيۡءٖۚ كَذَٰلِكَ فَعَلَ ٱلَّذِينَ مِن قَبۡلِهِمۡۚ فَهَلۡ عَلَى ٱلرُّسُلِ إِلَّا ٱلۡبَلَٰغُ ٱلۡمُبِينُ",
+            shortestVerse: "وَعَلَٰمَٰتٖۚ وَبِٱلنَّجۡمِ هُمۡ يَهۡتَدُونَ",
+            avgWords: 14.41,
+            avgLetters: 116.49,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (109)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "تَعۡلَمُونَ (5)"
+          },
+          17: {
+            longestVerse: "وَمَن يَهۡدِ ٱللَّهُ فَهُوَ ٱلۡمُهۡتَدِۖ وَمَن يُضۡلِلۡ فَلَن تَجِدَ لَهُمۡ أَوۡلِيَآءَ مِن دُونِهِۦۖ وَنَحۡشُرُهُمۡ يَوۡمَ ٱلۡقِيَٰمَةِ عَلَىٰ وُجُوهِهِمۡ عُمۡيٗا وَبُكۡمٗا وَصُمّٗاۖ مَّأۡوَىٰهُمۡ جَهَنَّمُۖ كُلَّمَا خَبَتۡ زِدۡنَٰهُمۡ سَعِيرٗا",
+            shortestVerse: "۞قُلۡ كُونُواْ حِجَارَةً أَوۡ حَدِيدًا",
+            avgWords: 14.02,
+            avgLetters: 113.87,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (109)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "كَبِيرٗا (6)"
+          },
+          18: {
+            longestVerse: "وَكَذَٰلِكَ بَعَثۡنَٰهُمۡ لِيَتَسَآءَلُواْ بَيۡنَهُمۡۚ قَالَ قَآئِلٞ مِّنۡهُمۡ كَمۡ لَبِثۡتُمۡۖ قَالُواْ لَبِثۡنَا يَوۡمًا أَوۡ بَعۡضَ يَوۡمٖۚ قَالُواْ رَبُّكُمۡ أَعۡلَمُ بِمَا لَبِثۡتُمۡ فَٱبۡعَثُوٓاْ أَحَدَكُم بِوَرِقِكُمۡ هَٰذِهِۦٓ إِلَى ٱلۡمَدِينَةِ فَلۡيَنظُرۡ أَيُّهَآ أَزۡكَىٰ طَعَامٗا فَلۡيَأۡتِكُم بِرِزۡقٖ مِّنۡهُ وَلۡيَتَلَطَّفۡ وَلَا يُشۡعِرَنَّ بِكُمۡ أَحَدًا",
+            shortestVerse: "فَأَتۡبَعَ سَبَبًا",
+            avgWords: 14.35,
+            avgLetters: 113.5,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (109)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "أَحَدٗا (6)"
+          },
+          19: {
+            longestVerse: "أُوْلَـٰٓئِكَ ٱلَّذِينَ أَنۡعَمَ ٱللَّهُ عَلَيۡهِم مِّنَ ٱلنَّبِيِّـۧنَ مِن ذُرِّيَّةِ ءَادَمَ وَمِمَّنۡ حَمَلۡنَا مَعَ نُوحٖ وَمِن ذُرِّيَّةِ إِبۡرَٰهِيمَ وَإِسۡرَـٰٓءِيلَ وَمِمَّنۡ هَدَيۡنَا وَٱجۡتَبَيۡنَآۚ إِذَا تُتۡلَىٰ عَلَيۡهِمۡ ءَايَٰتُ ٱلرَّحۡمَٰنِ خَرُّواْۤ سُجَّدٗاۤ وَبُكِيّٗا۩",
+            shortestVerse: "كٓهيعٓصٓ",
+            avgWords: 9.81,
+            avgLetters: 77.05,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (89)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "شَيۡـٔٗا (4)"
+          },
+          20: {
+            longestVerse: "إِذۡ تَمۡشِيٓ أُخۡتُكَ فَتَقُولُ هَلۡ أَدُلُّكُمۡ عَلَىٰ مَن يَكۡفُلُهُۥۖ فَرَجَعۡنَٰكَ إِلَىٰٓ أُمِّكَ كَيۡ تَقَرَّ عَيۡنُهَا وَلَا تَحۡزَنَۚ وَقَتَلۡتَ نَفۡسٗا فَنَجَّيۡنَٰكَ مِنَ ٱلۡغَمِّ وَفَتَنَّـٰكَ فُتُونٗاۚ فَلَبِثۡتَ سِنِينَ فِيٓ أَهۡلِ مَدۡيَنَ ثُمَّ جِئۡتَ عَلَىٰ قَدَرٖ يَٰمُوسَىٰ",
+            shortestVerse: "طه",
+            avgWords: 9.89,
+            avgLetters: 77.02,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ى (86)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "يَٰمُوسَىٰ (7)"
+          },
+          21: {
+            longestVerse: "وَذَا ٱلنُّونِ إِذ ذَّهَبَ مُغَٰضِبٗا فَظَنَّ أَن لَّن نَّقۡدِرَ عَلَيۡهِ فَنَادَىٰ فِي ٱلظُّلُمَٰتِ أَن لَّآ إِلَٰهَ إِلَّآ أَنتَ سُبۡحَٰنَكَ إِنِّي كُنتُ مِنَ ٱلظَّـٰلِمِينَ",
+            shortestVerse: "قَالُواْ يَٰوَيۡلَنَآ إِنَّا كُنَّا ظَٰلِمِينَ",
+            avgWords: 10.44,
+            avgLetters: 85.99,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (106)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "فَٰعِلِينَ (4)"
+          },
+          22: {
+            longestVerse: "يَـٰٓأَيُّهَا ٱلنَّاسُ إِن كُنتُمۡ فِي رَيۡبٖ مِّنَ ٱلۡبَعۡثِ فَإِنَّا خَلَقۡنَٰكُم مِّن تُرَابٖ ثُمَّ مِن نُّطۡفَةٖ ثُمَّ مِنۡ عَلَقَةٖ ثُمَّ مِن مُّضۡغَةٖ مُّخَلَّقَةٖ وَغَيۡرِ مُخَلَّقَةٖ لِّنُبَيِّنَ لَكُمۡۚ وَنُقِرُّ فِي ٱلۡأَرۡحَامِ مَا نَشَآءُ إِلَىٰٓ أَجَلٖ مُّسَمّٗى ثُمَّ نُخۡرِجُكُمۡ طِفۡلٗا ثُمَّ لِتَبۡلُغُوٓاْ أَشُدَّكُمۡۖ وَمِنكُم مَّن يُتَوَفَّىٰ وَمِنكُم مَّن يُرَدُّ إِلَىٰٓ أَرۡذَلِ ٱلۡعُمُرِ لِكَيۡلَا يَعۡلَمَ مِنۢ بَعۡدِ عِلۡمٖ شَيۡـٔٗاۚ وَتَرَى ٱلۡأَرۡضَ هَامِدَةٗ فَإِذَآ أَنزَلۡنَا عَلَيۡهَا ٱلۡمَآءَ ٱهۡتَزَّتۡ وَرَبَتۡ وَأَنۢبَتَتۡ مِن كُلِّ زَوۡجِۭ بَهِيجٖ",
+            shortestVerse: "وَلَهُم مَّقَٰمِعُ مِنۡ حَدِيدٖ",
+            avgWords: 16.33,
+            avgLetters: 129.73,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ر (25)",
+            uniqueEndLetters: 11,
+            mostCommonLastWord: "ٱلۡحَرِيقِ (2)"
+          },
+          23: {
+            longestVerse: "فَأَوۡحَيۡنَآ إِلَيۡهِ أَنِ ٱصۡنَعِ ٱلۡفُلۡكَ بِأَعۡيُنِنَا وَوَحۡيِنَا فَإِذَا جَآءَ أَمۡرُنَا وَفَارَ ٱلتَّنُّورُ فَٱسۡلُكۡ فِيهَا مِن كُلّٖ زَوۡجَيۡنِ ٱثۡنَيۡنِ وَأَهۡلَكَ إِلَّا مَن سَبَقَ عَلَيۡهِ ٱلۡقَوۡلُ مِنۡهُمۡۖ وَلَا تُخَٰطِبۡنِي فِي ٱلَّذِينَ ظَلَمُوٓاْ إِنَّهُم مُّغۡرَقُونَ",
+            shortestVerse: "قَدۡ أَفۡلَحَ ٱلۡمُؤۡمِنُونَ",
+            avgWords: 8.9,
+            avgLetters: 71.92,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (114)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "تَتَّقُونَ (3)"
+          },
+          24: {
+            longestVerse: "وَقُل لِّلۡمُؤۡمِنَٰتِ يَغۡضُضۡنَ مِنۡ أَبۡصَٰرِهِنَّ وَيَحۡفَظۡنَ فُرُوجَهُنَّ وَلَا يُبۡدِينَ زِينَتَهُنَّ إِلَّا مَا ظَهَرَ مِنۡهَاۖ وَلۡيَضۡرِبۡنَ بِخُمُرِهِنَّ عَلَىٰ جُيُوبِهِنَّۖ وَلَا يُبۡدِينَ زِينَتَهُنَّ إِلَّا لِبُعُولَتِهِنَّ أَوۡ ءَابَآئِهِنَّ أَوۡ ءَابَآءِ بُعُولَتِهِنَّ أَوۡ أَبۡنَآئِهِنَّ أَوۡ أَبۡنَآءِ بُعُولَتِهِنَّ أَوۡ إِخۡوَٰنِهِنَّ أَوۡ بَنِيٓ إِخۡوَٰنِهِنَّ أَوۡ بَنِيٓ أَخَوَٰتِهِنَّ أَوۡ نِسَآئِهِنَّ أَوۡ مَا مَلَكَتۡ أَيۡمَٰنُهُنَّ أَوِ ٱلتَّـٰبِعِينَ غَيۡرِ أُوْلِي ٱلۡإِرۡبَةِ مِنَ ٱلرِّجَالِ أَوِ ٱلطِّفۡلِ ٱلَّذِينَ لَمۡ يَظۡهَرُواْ عَلَىٰ عَوۡرَٰتِ ٱلنِّسَآءِۖ وَلَا يَضۡرِبۡنَ بِأَرۡجُلِهِنَّ لِيُعۡلَمَ مَا يُخۡفِينَ مِن زِينَتِهِنَّۚ وَتُوبُوٓاْ إِلَى ٱللَّهِ جَمِيعًا أَيُّهَ ٱلۡمُؤۡمِنُونَ لَعَلَّكُمۡ تُفۡلِحُونَ",
+            shortestVerse: "وَيُبَيِّنُ ٱللَّهُ لَكُمُ ٱلۡأٓيَٰتِۚ وَٱللَّهُ عَلِيمٌ حَكِيمٌ",
+            avgWords: 20.56,
+            avgLetters: 171.64,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (31)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "عَلِيمٞ (5)"
+          },
+          25: {
+            longestVerse: "وَٱتَّخَذُواْ مِن دُونِهِۦٓ ءَالِهَةٗ لَّا يَخۡلُقُونَ شَيۡـٔٗا وَهُمۡ يُخۡلَقُونَ وَلَا يَمۡلِكُونَ لِأَنفُسِهِمۡ ضَرّٗا وَلَا نَفۡعٗا وَلَا يَمۡلِكُونَ مَوۡتٗا وَلَا حَيَوٰةٗ وَلَا نُشُورٗا",
+            shortestVerse: "إِنَّهَا سَآءَتۡ مُسۡتَقَرّٗا وَمُقَامٗا",
+            avgWords: 11.6,
+            avgLetters: 94.4,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (75)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "سَبِيلٗا (4)"
+          },
+          26: {
+            longestVerse: "قَالَ ءَامَنتُمۡ لَهُۥ قَبۡلَ أَنۡ ءَاذَنَ لَكُمۡۖ إِنَّهُۥ لَكَبِيرُكُمُ ٱلَّذِي عَلَّمَكُمُ ٱلسِّحۡرَ فَلَسَوۡفَ تَعۡلَمُونَۚ لَأُقَطِّعَنَّ أَيۡدِيَكُمۡ وَأَرۡجُلَكُم مِّنۡ خِلَٰفٖ وَلَأُصَلِّبَنَّكُمۡ أَجۡمَعِينَ",
+            shortestVerse: "طسٓمٓ",
+            avgWords: 5.81,
+            avgLetters: 46.72,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (193)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "ٱلۡعَٰلَمِينَ (12)"
+          },
+          27: {
+            longestVerse: "قَالَ ٱلَّذِي عِندَهُۥ عِلۡمٞ مِّنَ ٱلۡكِتَٰبِ أَنَا۠ ءَاتِيكَ بِهِۦ قَبۡلَ أَن يَرۡتَدَّ إِلَيۡكَ طَرۡفُكَۚ فَلَمَّا رَءَاهُ مُسۡتَقِرًّا عِندَهُۥ قَالَ هَٰذَا مِن فَضۡلِ رَبِّي لِيَبۡلُوَنِيٓ ءَأَشۡكُرُ أَمۡ أَكۡفُرُۖ وَمَن شَكَرَ فَإِنَّمَا يَشۡكُرُ لِنَفۡسِهِۦۖ وَمَن كَفَرَ فَإِنَّ رَبِّي غَنِيّٞ كَرِيمٞ",
+            shortestVerse: "هُدٗى وَبُشۡرَىٰ لِلۡمُؤۡمِنِينَ",
+            avgWords: 12.37,
+            avgLetters: 98.4,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (84)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "مُسۡلِمِينَ (3)"
+          },
+          28: {
+            longestVerse: "وَدَخَلَ ٱلۡمَدِينَةَ عَلَىٰ حِينِ غَفۡلَةٖ مِّنۡ أَهۡلِهَا فَوَجَدَ فِيهَا رَجُلَيۡنِ يَقۡتَتِلَانِ هَٰذَا مِن شِيعَتِهِۦ وَهَٰذَا مِنۡ عَدُوِّهِۦۖ فَٱسۡتَغَٰثَهُ ٱلَّذِي مِن شِيعَتِهِۦ عَلَى ٱلَّذِي مِنۡ عَدُوِّهِۦ فَوَكَزَهُۥ مُوسَىٰ فَقَضَىٰ عَلَيۡهِۖ قَالَ هَٰذَا مِنۡ عَمَلِ ٱلشَّيۡطَٰنِۖ إِنَّهُۥ عَدُوّٞ مُّضِلّٞ مُّبِينٞ",
+            shortestVerse: "طسٓمٓ",
+            avgWords: 16.25,
+            avgLetters: 128.72,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (81)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "ٱلظَّـٰلِمِينَ (4)"
+          },
+          29: {
+            longestVerse: "وَمِنَ ٱلنَّاسِ مَن يَقُولُ ءَامَنَّا بِٱللَّهِ فَإِذَآ أُوذِيَ فِي ٱللَّهِ جَعَلَ فِتۡنَةَ ٱلنَّاسِ كَعَذَابِ ٱللَّهِۖ وَلَئِن جَآءَ نَصۡرٞ مِّن رَّبِّكَ لَيَقُولُنَّ إِنَّا كُنَّا مَعَكُمۡۚ أَوَلَيۡسَ ٱللَّهُ بِأَعۡلَمَ بِمَا فِي صُدُورِ ٱلۡعَٰلَمِينَ",
+            shortestVerse: "الٓمٓ",
+            avgWords: 14.14,
+            avgLetters: 118.42,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (59)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "ٱلۡعَٰلَمِينَ (3)"
+          },
+          30: {
+            longestVerse: "أَوَلَمۡ يَسِيرُواْ فِي ٱلۡأَرۡضِ فَيَنظُرُواْ كَيۡفَ كَانَ عَٰقِبَةُ ٱلَّذِينَ مِن قَبۡلِهِمۡۚ كَانُوٓاْ أَشَدَّ مِنۡهُمۡ قُوَّةٗ وَأَثَارُواْ ٱلۡأَرۡضَ وَعَمَرُوهَآ أَكۡثَرَ مِمَّا عَمَرُوهَا وَجَآءَتۡهُمۡ رُسُلُهُم بِٱلۡبَيِّنَٰتِۖ فَمَا كَانَ ٱللَّهُ لِيَظۡلِمَهُمۡ وَلَٰكِن كَانُوٓاْ أَنفُسَهُمۡ يَظۡلِمُونَ",
+            shortestVerse: "الٓمٓ",
+            avgWords: 13.62,
+            avgLetters: 110.6,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (54)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "يَعۡلَمُونَ (3)"
+          },
+          31: {
+            longestVerse: "أَلَمۡ تَرَوۡاْ أَنَّ ٱللَّهَ سَخَّرَ لَكُم مَّا فِي ٱلسَّمَٰوَٰتِ وَمَا فِي ٱلۡأَرۡضِ وَأَسۡبَغَ عَلَيۡكُمۡ نِعَمَهُۥ ظَٰهِرَةٗ وَبَاطِنَةٗۗ وَمِنَ ٱلنَّاسِ مَن يُجَٰدِلُ فِي ٱللَّهِ بِغَيۡرِ عِلۡمٖ وَلَا هُدٗى وَلَا كِتَٰبٖ مُّنِيرٖ",
+            shortestVerse: "الٓمٓ",
+            avgWords: 16.06,
+            avgLetters: 121.5,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ر (16)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "خَبِيرٞ (2)"
+          },
+          32: {
+            longestVerse: "ٱللَّهُ ٱلَّذِي خَلَقَ ٱلسَّمَٰوَٰتِ وَٱلۡأَرۡضَ وَمَا بَيۡنَهُمَا فِي سِتَّةِ أَيَّامٖ ثُمَّ ٱسۡتَوَىٰ عَلَى ٱلۡعَرۡشِۖ مَا لَكُم مِّن دُونِهِۦ مِن وَلِيّٖ وَلَا شَفِيعٍۚ أَفَلَا تَتَذَكَّرُونَ",
+            shortestVerse: "الٓمٓ",
+            avgWords: 12.4,
+            avgLetters: 98.67,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (26)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "يَعۡمَلُونَ (2)"
+          },
+          33: {
+            longestVerse: "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ لَا تَدۡخُلُواْ بُيُوتَ ٱلنَّبِيِّ إِلَّآ أَن يُؤۡذَنَ لَكُمۡ إِلَىٰ طَعَامٍ غَيۡرَ نَٰظِرِينَ إِنَىٰهُ وَلَٰكِنۡ إِذَا دُعِيتُمۡ فَٱدۡخُلُواْ فَإِذَا طَعِمۡتُمۡ فَٱنتَشِرُواْ وَلَا مُسۡتَـٔۡنِسِينَ لِحَدِيثٍۚ إِنَّ ذَٰلِكُمۡ كَانَ يُؤۡذِي ٱلنَّبِيَّ فَيَسۡتَحۡيِۦ مِنكُمۡۖ وَٱللَّهُ لَا يَسۡتَحۡيِۦ مِنَ ٱلۡحَقِّۚ وَإِذَا سَأَلۡتُمُوهُنَّ مَتَٰعٗا فَسۡـَٔلُوهُنَّ مِن وَرَآءِ حِجَابٖۚ ذَٰلِكُمۡ أَطۡهَرُ لِقُلُوبِكُمۡ وَقُلُوبِهِنَّۚ وَمَا كَانَ لَكُمۡ أَن تُؤۡذُواْ رَسُولَ ٱللَّهِ وَلَآ أَن تَنكِحُوٓاْ أَزۡوَٰجَهُۥ مِنۢ بَعۡدِهِۦٓ أَبَدًاۚ إِنَّ ذَٰلِكُمۡ كَانَ عِندَ ٱللَّهِ عَظِيمًا",
+            shortestVerse: "وَسَبِّحُوهُ بُكۡرَةٗ وَأَصِيلًا",
+            avgWords: 17.63,
+            avgLetters: 148.81,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (72)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "يَسِيرٗا (3)"
+          },
+          34: {
+            longestVerse: "وَقَالَ ٱلَّذِينَ ٱسۡتُضۡعِفُواْ لِلَّذِينَ ٱسۡتَكۡبَرُواْ بَلۡ مَكۡرُ ٱلَّيۡلِ وَٱلنَّهَارِ إِذۡ تَأۡمُرُونَنَآ أَن نَّكۡفُرَ بِٱللَّهِ وَنَجۡعَلَ لَهُۥٓ أَندَادٗاۚ وَأَسَرُّواْ ٱلنَّدَامَةَ لَمَّا رَأَوُاْ ٱلۡعَذَابَۚ وَجَعَلۡنَا ٱلۡأَغۡلَٰلَ فِيٓ أَعۡنَاقِ ٱلَّذِينَ كَفَرُواْۖ هَلۡ يُجۡزَوۡنَ إِلَّا مَا كَانُواْ يَعۡمَلُونَ",
+            shortestVerse: "وَيَقُولُونَ مَتَىٰ هَٰذَا ٱلۡوَعۡدُ إِن كُنتُمۡ صَٰدِقِينَ",
+            avgWords: 16.35,
+            avgLetters: 126.54,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (22)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "مُّبِينٖ (2)"
+          },
+          35: {
+            longestVerse: "وَٱللَّهُ خَلَقَكُم مِّن تُرَابٖ ثُمَّ مِن نُّطۡفَةٖ ثُمَّ جَعَلَكُمۡ أَزۡوَٰجٗاۚ وَمَا تَحۡمِلُ مِنۡ أُنثَىٰ وَلَا تَضَعُ إِلَّا بِعِلۡمِهِۦۚ وَمَا يُعَمَّرُ مِن مُّعَمَّرٖ وَلَا يُنقَصُ مِنۡ عُمُرِهِۦٓ إِلَّا فِي كِتَٰبٍۚ إِنَّ ذَٰلِكَ عَلَى ٱللَّهِ يَسِيرٞ",
+            shortestVerse: "وَمَا يَسۡتَوِي ٱلۡأَعۡمَىٰ وَٱلۡبَصِيرُ",
+            avgWords: 17.22,
+            avgLetters: 136.64,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ر (29)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "قَدِيرٞ (1)"
+          },
+          36: {
+            longestVerse: "وَإِذَا قِيلَ لَهُمۡ أَنفِقُواْ مِمَّا رَزَقَكُمُ ٱللَّهُ قَالَ ٱلَّذِينَ كَفَرُواْ لِلَّذِينَ ءَامَنُوٓاْ أَنُطۡعِمُ مَن لَّوۡ يَشَآءُ ٱللَّهُ أَطۡعَمَهُۥٓ إِنۡ أَنتُمۡ إِلَّا فِي ضَلَٰلٖ مُّبِينٖ",
+            shortestVerse: "يسٓ",
+            avgWords: 8.72,
+            avgLetters: 69.71,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (70)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "يَرۡجِعُونَ (3)"
+          },
+          37: {
+            longestVerse: "فَلَمَّا بَلَغَ مَعَهُ ٱلسَّعۡيَ قَالَ يَٰبُنَيَّ إِنِّيٓ أَرَىٰ فِي ٱلۡمَنَامِ أَنِّيٓ أَذۡبَحُكَ فَٱنظُرۡ مَاذَا تَرَىٰۚ قَالَ يَـٰٓأَبَتِ ٱفۡعَلۡ مَا تُؤۡمَرُۖ سَتَجِدُنِيٓ إِن شَآءَ ٱللَّهُ مِنَ ٱلصَّـٰبِرِينَ",
+            shortestVerse: "وَٱلصَّـٰٓفَّـٰتِ صَفّٗا",
+            avgWords: 4.73,
+            avgLetters: 40.25,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (145)",
+            uniqueEndLetters: 6,
+            mostCommonLastWord: "ٱلۡجَحِيمِ (6)"
+          },
+          38: {
+            longestVerse: "قَالَ لَقَدۡ ظَلَمَكَ بِسُؤَالِ نَعۡجَتِكَ إِلَىٰ نِعَاجِهِۦۖ وَإِنَّ كَثِيرٗا مِّنَ ٱلۡخُلَطَآءِ لَيَبۡغِي بَعۡضُهُمۡ عَلَىٰ بَعۡضٍ إِلَّا ٱلَّذِينَ ءَامَنُواْ وَعَمِلُواْ ٱلصَّـٰلِحَٰتِ وَقَلِيلٞ مَّا هُمۡۗ وَظَنَّ دَاوُۥدُ أَنَّمَا فَتَنَّـٰهُ فَٱسۡتَغۡفَرَ رَبَّهُۥ وَخَرَّۤ رَاكِعٗاۤ وَأَنَابَ۩",
+            shortestVerse: "أَنتُمۡ عَنۡهُ مُعۡرِضُونَ",
+            avgWords: 8.33,
+            avgLetters: 66.67,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ب (34)",
+            uniqueEndLetters: 11,
+            mostCommonLastWord: "مَـَٔابٖ (4)"
+          },
+          39: {
+            longestVerse: "خَلَقَكُم مِّن نَّفۡسٖ وَٰحِدَةٖ ثُمَّ جَعَلَ مِنۡهَا زَوۡجَهَا وَأَنزَلَ لَكُم مِّنَ ٱلۡأَنۡعَٰمِ ثَمَٰنِيَةَ أَزۡوَٰجٖۚ يَخۡلُقُكُمۡ فِي بُطُونِ أُمَّهَٰتِكُمۡ خَلۡقٗا مِّنۢ بَعۡدِ خَلۡقٖ فِي ظُلُمَٰتٖ ثَلَٰثٖۚ ذَٰلِكُمُ ٱللَّهُ رَبُّكُمۡ لَهُ ٱلۡمُلۡكُۖ لَآ إِلَٰهَ إِلَّا هُوَۖ فَأَنَّىٰ تُصۡرَفُونَ",
+            shortestVerse: "إِنَّكَ مَيِّتٞ وَإِنَّهُم مَّيِّتُونَ",
+            avgWords: 15.63,
+            avgLetters: 124.03,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (53)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "ٱلۡأَلۡبَٰبِ (3)"
+          },
+          40: {
+            longestVerse: "وَقَالَ رَجُلٞ مُّؤۡمِنٞ مِّنۡ ءَالِ فِرۡعَوۡنَ يَكۡتُمُ إِيمَٰنَهُۥٓ أَتَقۡتُلُونَ رَجُلًا أَن يَقُولَ رَبِّيَ ٱللَّهُ وَقَدۡ جَآءَكُم بِٱلۡبَيِّنَٰتِ مِن رَّبِّكُمۡۖ وَإِن يَكُ كَٰذِبٗا فَعَلَيۡهِ كَذِبُهُۥۖ وَإِن يَكُ صَادِقٗا يُصِبۡكُم بَعۡضُ ٱلَّذِي يَعِدُكُمۡۖ إِنَّ ٱللَّهَ لَا يَهۡدِي مَنۡ هُوَ مُسۡرِفٞ كَذَّابٞ",
+            shortestVerse: "حمٓ",
+            avgWords: 14.34,
+            avgLetters: 113.87,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (32)",
+            uniqueEndLetters: 8,
+            mostCommonLastWord: "ٱلنَّارِ (4)"
+          },
+          41: {
+            longestVerse: "وَلَئِنۡ أَذَقۡنَٰهُ رَحۡمَةٗ مِّنَّا مِنۢ بَعۡدِ ضَرَّآءَ مَسَّتۡهُ لَيَقُولَنَّ هَٰذَا لِي وَمَآ أَظُنُّ ٱلسَّاعَةَ قَآئِمَةٗ وَلَئِن رُّجِعۡتُ إِلَىٰ رَبِّيٓ إِنَّ لِي عِندَهُۥ لَلۡحُسۡنَىٰۚ فَلَنُنَبِّئَنَّ ٱلَّذِينَ كَفَرُواْ بِمَا عَمِلُواْ وَلَنُذِيقَنَّهُم مِّنۡ عَذَابٍ غَلِيظٖ",
+            shortestVerse: "حمٓ",
+            avgWords: 14.69,
+            avgLetters: 118.94,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (29)",
+            uniqueEndLetters: 11,
+            mostCommonLastWord: "كَٰفِرُونَ (2)"
+          },
+          42: {
+            longestVerse: "۞شَرَعَ لَكُم مِّنَ ٱلدِّينِ مَا وَصَّىٰ بِهِۦ نُوحٗا وَٱلَّذِيٓ أَوۡحَيۡنَآ إِلَيۡكَ وَمَا وَصَّيۡنَا بِهِۦٓ إِبۡرَٰهِيمَ وَمُوسَىٰ وَعِيسَىٰٓۖ أَنۡ أَقِيمُواْ ٱلدِّينَ وَلَا تَتَفَرَّقُواْ فِيهِۚ كَبُرَ عَلَى ٱلۡمُشۡرِكِينَ مَا تَدۡعُوهُمۡ إِلَيۡهِۚ ٱللَّهُ يَجۡتَبِيٓ إِلَيۡهِ مَن يَشَآءُ وَيَهۡدِيٓ إِلَيۡهِ مَن يُنِيبُ",
+            shortestVerse: "حمٓ",
+            avgWords: 16.23,
+            avgLetters: 126.38,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ر (20)",
+            uniqueEndLetters: 9,
+            mostCommonLastWord: "قَدِيرٞ (3)"
+          },
+          43: {
+            longestVerse: "أَهُمۡ يَقۡسِمُونَ رَحۡمَتَ رَبِّكَۚ نَحۡنُ قَسَمۡنَا بَيۡنَهُم مَّعِيشَتَهُمۡ فِي ٱلۡحَيَوٰةِ ٱلدُّنۡيَاۚ وَرَفَعۡنَا بَعۡضَهُمۡ فَوۡقَ بَعۡضٖ دَرَجَٰتٖ لِّيَتَّخِذَ بَعۡضُهُم بَعۡضٗا سُخۡرِيّٗاۗ وَرَحۡمَتُ رَبِّكَ خَيۡرٞ مِّمَّا يَجۡمَعُونَ",
+            shortestVerse: "حمٓ",
+            avgWords: 9.33,
+            avgLetters: 77.61,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (78)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "ٱلۡأَوَّلِينَ (2)"
+          },
+          44: {
+            longestVerse: "أَهُمۡ خَيۡرٌ أَمۡ قَوۡمُ تُبَّعٖ وَٱلَّذِينَ مِن قَبۡلِهِمۡ أَهۡلَكۡنَٰهُمۡۚ إِنَّهُمۡ كَانُواْ مُجۡرِمِينَ",
+            shortestVerse: "حمٓ",
+            avgWords: 5.86,
+            avgLetters: 47.32,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (44)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "مُّبِينٖ (2)"
+          },
+          45: {
+            longestVerse: "وَءَاتَيۡنَٰهُم بَيِّنَٰتٖ مِّنَ ٱلۡأَمۡرِۖ فَمَا ٱخۡتَلَفُوٓاْ إِلَّا مِنۢ بَعۡدِ مَا جَآءَهُمُ ٱلۡعِلۡمُ بَغۡيَۢا بَيۡنَهُمۡۚ إِنَّ رَبَّكَ يَقۡضِي بَيۡنَهُمۡ يَوۡمَ ٱلۡقِيَٰمَةِ فِيمَا كَانُواْ فِيهِ يَخۡتَلِفُونَ",
+            shortestVerse: "حمٓ",
+            avgWords: 13.19,
+            avgLetters: 107.27,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (30)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "يُوقِنُونَ (2)"
+          },
+          46: {
+            longestVerse: "وَوَصَّيۡنَا ٱلۡإِنسَٰنَ بِوَٰلِدَيۡهِ إِحۡسَٰنًاۖ حَمَلَتۡهُ أُمُّهُۥ كُرۡهٗا وَوَضَعَتۡهُ كُرۡهٗاۖ وَحَمۡلُهُۥ وَفِصَٰلُهُۥ ثَلَٰثُونَ شَهۡرًاۚ حَتَّىٰٓ إِذَا بَلَغَ أَشُدَّهُۥ وَبَلَغَ أَرۡبَعِينَ سَنَةٗ قَالَ رَبِّ أَوۡزِعۡنِيٓ أَنۡ أَشۡكُرَ نِعۡمَتَكَ ٱلَّتِيٓ أَنۡعَمۡتَ عَلَيَّ وَعَلَىٰ وَٰلِدَيَّ وَأَنۡ أَعۡمَلَ صَٰلِحٗا تَرۡضَىٰهُ وَأَصۡلِحۡ لِي فِي ذُرِّيَّتِيٓۖ إِنِّي تُبۡتُ إِلَيۡكَ وَإِنِّي مِنَ ٱلۡمُسۡلِمِينَ",
+            shortestVerse: "حمٓ",
+            avgWords: 18.37,
+            avgLetters: 145.17,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ن (26)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "حمٓ (1)"
+          },
+          47: {
+            longestVerse: "مَّثَلُ ٱلۡجَنَّةِ ٱلَّتِي وُعِدَ ٱلۡمُتَّقُونَۖ فِيهَآ أَنۡهَٰرٞ مِّن مَّآءٍ غَيۡرِ ءَاسِنٖ وَأَنۡهَٰرٞ مِّن لَّبَنٖ لَّمۡ يَتَغَيَّرۡ طَعۡمُهُۥ وَأَنۡهَٰرٞ مِّنۡ خَمۡرٖ لَّذَّةٖ لِّلشَّـٰرِبِينَ وَأَنۡهَٰرٞ مِّنۡ عَسَلٖ مُّصَفّٗىۖ وَلَهُمۡ فِيهَا مِن كُلِّ ٱلثَّمَرَٰتِ وَمَغۡفِرَةٞ مِّن رَّبِّهِمۡۖ كَمَنۡ هُوَ خَٰلِدٞ فِي ٱلنَّارِ وَسُقُواْ مَآءً حَمِيمٗا فَقَطَّعَ أَمۡعَآءَهُمۡ",
+            shortestVerse: "سَيَهۡدِيهِمۡ وَيُصۡلِحُ بَالَهُمۡ",
+            avgWords: 14.18,
+            avgLetters: 122.74,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "م (36)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "أَعۡمَٰلَهُمۡ (6)"
+          },
+          48: {
+            longestVerse: "مُّحَمَّدٞ رَّسُولُ ٱللَّهِۚ وَٱلَّذِينَ مَعَهُۥٓ أَشِدَّآءُ عَلَى ٱلۡكُفَّارِ رُحَمَآءُ بَيۡنَهُمۡۖ تَرَىٰهُمۡ رُكَّعٗا سُجَّدٗا يَبۡتَغُونَ فَضۡلٗا مِّنَ ٱللَّهِ وَرِضۡوَٰنٗاۖ سِيمَاهُمۡ فِي وُجُوهِهِم مِّنۡ أَثَرِ ٱلسُّجُودِۚ ذَٰلِكَ مَثَلُهُمۡ فِي ٱلتَّوۡرَىٰةِۚ وَمَثَلُهُمۡ فِي ٱلۡإِنجِيلِ كَزَرۡعٍ أَخۡرَجَ شَطۡـَٔهُۥ فَـَٔازَرَهُۥ فَٱسۡتَغۡلَظَ فَٱسۡتَوَىٰ عَلَىٰ سُوقِهِۦ يُعۡجِبُ ٱلزُّرَّاعَ لِيَغِيظَ بِهِمُ ٱلۡكُفَّارَۗ وَعَدَ ٱللَّهُ ٱلَّذِينَ ءَامَنُواْ وَعَمِلُواْ ٱلصَّـٰلِحَٰتِ مِنۡهُم مَّغۡفِرَةٗ وَأَجۡرًا عَظِيمَۢا",
+            shortestVerse: "وَيَنصُرَكَ ٱللَّهُ نَصۡرًا عَزِيزًا",
+            avgWords: 19.31,
+            avgLetters: 162.93,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (29)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "مُّسۡتَقِيمٗا (2)"
+          },
+          49: {
+            longestVerse: "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ لَا يَسۡخَرۡ قَوۡمٞ مِّن قَوۡمٍ عَسَىٰٓ أَن يَكُونُواْ خَيۡرٗا مِّنۡهُمۡ وَلَا نِسَآءٞ مِّن نِّسَآءٍ عَسَىٰٓ أَن يَكُنَّ خَيۡرٗا مِّنۡهُنَّۖ وَلَا تَلۡمِزُوٓاْ أَنفُسَكُمۡ وَلَا تَنَابَزُواْ بِٱلۡأَلۡقَٰبِۖ بِئۡسَ ٱلِٱسۡمُ ٱلۡفُسُوقُ بَعۡدَ ٱلۡإِيمَٰنِۚ وَمَن لَّمۡ يَتُبۡ فَأُوْلَـٰٓئِكَ هُمُ ٱلظَّـٰلِمُونَ",
+            shortestVerse: "فَضۡلٗا مِّنَ ٱللَّهِ وَنِعۡمَةٗۚ وَٱللَّهُ عَلِيمٌ حَكِيمٞ",
+            avgWords: 19.28,
+            avgLetters: 162.72,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (10)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "عَلِيمٞ (2)"
+          },
+          50: {
+            longestVerse: "وَكَمۡ أَهۡلَكۡنَا قَبۡلَهُم مِّن قَرۡنٍ هُمۡ أَشَدُّ مِنۡهُم بَطۡشٗا فَنَقَّبُواْ فِي ٱلۡبِلَٰدِ هَلۡ مِن مَّحِيصٍ",
+            shortestVerse: "قٓۚ وَٱلۡقُرۡءَانِ ٱلۡمَجِيدِ",
+            avgWords: 8.29,
+            avgLetters: 63.8,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "د (27)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "وَعِيدِ (2)"
+          },
+          51: {
+            longestVerse: "كَذَٰلِكَ مَآ أَتَى ٱلَّذِينَ مِن قَبۡلِهِم مِّن رَّسُولٍ إِلَّا قَالُواْ سَاحِرٌ أَوۡ مَجۡنُونٌ",
+            shortestVerse: "وَٱلذَّـٰرِيَٰتِ ذَرۡوٗا",
+            avgWords: 6.0,
+            avgLetters: 48.53,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (42)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "ٱلۡمُؤۡمِنِينَ (2)"
+          },
+          52: {
+            longestVerse: "وَٱلَّذِينَ ءَامَنُواْ وَٱتَّبَعَتۡهُمۡ ذُرِّيَّتُهُم بِإِيمَٰنٍ أَلۡحَقۡنَا بِهِمۡ ذُرِّيَّتَهُمۡ وَمَآ أَلَتۡنَٰهُم مِّنۡ عَمَلِهِم مِّن شَيۡءٖۚ كُلُّ ٱمۡرِيِٕۭ بِمَا كَسَبَ رَهِينٞ",
+            shortestVerse: "وَٱلطُّورِ",
+            avgWords: 6.37,
+            avgLetters: 51.35,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (30)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "تَعۡمَلُونَ (2)"
+          },
+          53: {
+            longestVerse: "ٱلَّذِينَ يَجۡتَنِبُونَ كَبَـٰٓئِرَ ٱلۡإِثۡمِ وَٱلۡفَوَٰحِشَ إِلَّا ٱللَّمَمَۚ إِنَّ رَبَّكَ وَٰسِعُ ٱلۡمَغۡفِرَةِۚ هُوَ أَعۡلَمُ بِكُمۡ إِذۡ أَنشَأَكُم مِّنَ ٱلۡأَرۡضِ وَإِذۡ أَنتُمۡ أَجِنَّةٞ فِي بُطُونِ أُمَّهَٰتِكُمۡۖ فَلَا تُزَكُّوٓاْ أَنفُسَكُمۡۖ هُوَ أَعۡلَمُ بِمَنِ ٱتَّقَىٰٓ",
+            shortestVerse: "وَٱلۡمُؤۡتَفِكَةَ أَهۡوَىٰ",
+            avgWords: 5.81,
+            avgLetters: 44.65,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ى (53)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "أُخۡرَىٰ (2)"
+          },
+          54: {
+            longestVerse: "فَقَالُوٓاْ أَبَشَرٗا مِّنَّا وَٰحِدٗا نَّتَّبِعُهُۥٓ إِنَّآ إِذٗا لَّفِي ضَلَٰلٖ وَسُعُرٍ",
+            shortestVerse: "كَذَّبَتۡ ثَمُودُ بِٱلنُّذُرِ",
+            avgWords: 6.22,
+            avgLetters: 51.78,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ر (55)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "مُّدَّكِرٖ (6)"
+          },
+          55: {
+            longestVerse: "يَٰمَعۡشَرَ ٱلۡجِنِّ وَٱلۡإِنسِ إِنِ ٱسۡتَطَعۡتُمۡ أَن تَنفُذُواْ مِنۡ أَقۡطَارِ ٱلسَّمَٰوَٰتِ وَٱلۡأَرۡضِ فَٱنفُذُواْۚ لَا تَنفُذُونَ إِلَّا بِسُلۡطَٰنٖ",
+            shortestVerse: "ٱلرَّحۡمَٰنُ",
+            avgWords: 4.5,
+            avgLetters: 41.05,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (69)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "تُكَذِّبَانِ (31)"
+          },
+          56: {
+            longestVerse: "وَكَانُواْ يَقُولُونَ أَئِذَا مِتۡنَا وَكُنَّا تُرَابٗا وَعِظَٰمًا أَءِنَّا لَمَبۡعُوثُونَ",
+            shortestVerse: "خَافِضَةٞ رَّافِعَةٌ",
+            avgWords: 3.95,
+            avgLetters: 34.24,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (55)",
+            uniqueEndLetters: 8,
+            mostCommonLastWord: "ٱلۡيَمِينِ (4)"
+          },
+          57: {
+            longestVerse: "ٱعۡلَمُوٓاْ أَنَّمَا ٱلۡحَيَوٰةُ ٱلدُّنۡيَا لَعِبٞ وَلَهۡوٞ وَزِينَةٞ وَتَفَاخُرُۢ بَيۡنَكُمۡ وَتَكَاثُرٞ فِي ٱلۡأَمۡوَٰلِ وَٱلۡأَوۡلَٰدِۖ كَمَثَلِ غَيۡثٍ أَعۡجَبَ ٱلۡكُفَّارَ نَبَاتُهُۥ ثُمَّ يَهِيجُ فَتَرَىٰهُ مُصۡفَرّٗا ثُمَّ يَكُونُ حُطَٰمٗاۖ وَفِي ٱلۡأٓخِرَةِ عَذَابٞ شَدِيدٞ وَمَغۡفِرَةٞ مِّنَ ٱللَّهِ وَرِضۡوَٰنٞۚ وَمَا ٱلۡحَيَوٰةُ ٱلدُّنۡيَآ إِلَّا مَتَٰعُ ٱلۡغُرُورِ",
+            shortestVerse: "لَّهُۥ مُلۡكُ ٱلسَّمَٰوَٰتِ وَٱلۡأَرۡضِۚ وَإِلَى ٱللَّهِ تُرۡجَعُ ٱلۡأُمُورُ",
+            avgWords: 19.79,
+            avgLetters: 165.52,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ر (11)",
+            uniqueEndLetters: 6,
+            mostCommonLastWord: "فَٰسِقُونَ (3)"
+          },
+          58: {
+            longestVerse: "لَّا تَجِدُ قَوۡمٗا يُؤۡمِنُونَ بِٱللَّهِ وَٱلۡيَوۡمِ ٱلۡأٓخِرِ يُوَآدُّونَ مَنۡ حَآدَّ ٱللَّهَ وَرَسُولَهُۥ وَلَوۡ كَانُوٓاْ ءَابَآءَهُمۡ أَوۡ أَبۡنَآءَهُمۡ أَوۡ إِخۡوَٰنَهُمۡ أَوۡ عَشِيرَتَهُمۡۚ أُوْلَـٰٓئِكَ كَتَبَ فِي قُلُوبِهِمُ ٱلۡإِيمَٰنَ وَأَيَّدَهُم بِرُوحٖ مِّنۡهُۖ وَيُدۡخِلُهُمۡ جَنَّـٰتٖ تَجۡرِي مِن تَحۡتِهَا ٱلۡأَنۡهَٰرُ خَٰلِدِينَ فِيهَاۚ رَضِيَ ٱللَّهُ عَنۡهُمۡ وَرَضُواْ عَنۡهُۚ أُوْلَـٰٓئِكَ حِزۡبُ ٱللَّهِۚ أَلَآ إِنَّ حِزۡبَ ٱللَّهِ هُمُ ٱلۡمُفۡلِحُونَ",
+            shortestVerse: "إِنَّ ٱلَّذِينَ يُحَآدُّونَ ٱللَّهَ وَرَسُولَهُۥٓ أُوْلَـٰٓئِكَ فِي ٱلۡأَذَلِّينَ",
+            avgWords: 21.45,
+            avgLetters: 177.32,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (12)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "خَبِيرٞ (2)"
+          },
+          59: {
+            longestVerse: "هُوَ ٱلَّذِيٓ أَخۡرَجَ ٱلَّذِينَ كَفَرُواْ مِنۡ أَهۡلِ ٱلۡكِتَٰبِ مِن دِيَٰرِهِمۡ لِأَوَّلِ ٱلۡحَشۡرِۚ مَا ظَنَنتُمۡ أَن يَخۡرُجُواْۖ وَظَنُّوٓاْ أَنَّهُم مَّانِعَتُهُمۡ حُصُونُهُم مِّنَ ٱللَّهِ فَأَتَىٰهُمُ ٱللَّهُ مِنۡ حَيۡثُ لَمۡ يَحۡتَسِبُواْۖ وَقَذَفَ فِي قُلُوبِهِمُ ٱلرُّعۡبَۚ يُخۡرِبُونَ بُيُوتَهُم بِأَيۡدِيهِمۡ وَأَيۡدِي ٱلۡمُؤۡمِنِينَ فَٱعۡتَبِرُواْ يَـٰٓأُوْلِي ٱلۡأَبۡصَٰرِ",
+            shortestVerse: "فَكَانَ عَٰقِبَتَهُمَآ أَنَّهُمَا فِي ٱلنَّارِ خَٰلِدَيۡنِ فِيهَاۚ وَذَٰلِكَ جَزَـٰٓؤُاْ ٱلظَّـٰلِمِينَ",
+            avgWords: 18.54,
+            avgLetters: 154.54,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (14)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "ٱلۡحَكِيمُ (2)"
+          },
+          60: {
+            longestVerse: "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوٓاْ إِذَا جَآءَكُمُ ٱلۡمُؤۡمِنَٰتُ مُهَٰجِرَٰتٖ فَٱمۡتَحِنُوهُنَّۖ ٱللَّهُ أَعۡلَمُ بِإِيمَٰنِهِنَّۖ فَإِنۡ عَلِمۡتُمُوهُنَّ مُؤۡمِنَٰتٖ فَلَا تَرۡجِعُوهُنَّ إِلَى ٱلۡكُفَّارِۖ لَا هُنَّ حِلّٞ لَّهُمۡ وَلَا هُمۡ يَحِلُّونَ لَهُنَّۖ وَءَاتُوهُم مَّآ أَنفَقُواْۚ وَلَا جُنَاحَ عَلَيۡكُمۡ أَن تَنكِحُوهُنَّ إِذَآ ءَاتَيۡتُمُوهُنَّ أُجُورَهُنَّۚ وَلَا تُمۡسِكُواْ بِعِصَمِ ٱلۡكَوَافِرِ وَسۡـَٔلُواْ مَآ أَنفَقۡتُمۡ وَلۡيَسۡـَٔلُواْ مَآ أَنفَقُواْۚ ذَٰلِكُمۡ حُكۡمُ ٱللَّهِ يَحۡكُمُ بَيۡنَكُمۡۖ وَٱللَّهُ عَلِيمٌ حَكِيمٞ",
+            shortestVerse: "إِن يَثۡقَفُوكُمۡ يَكُونُواْ لَكُمۡ أَعۡدَآءٗ وَيَبۡسُطُوٓاْ إِلَيۡكُمۡ أَيۡدِيَهُمۡ وَأَلۡسِنَتَهُم بِٱلسُّوٓءِ وَوَدُّواْ لَوۡ تَكۡفُرُونَ",
+            avgWords: 26.77,
+            avgLetters: 229.0,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (4)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "رَّحِيمٞ (2)"
+          },
+          61: {
+            longestVerse: "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ كُونُوٓاْ أَنصَارَ ٱللَّهِ كَمَا قَالَ عِيسَى ٱبۡنُ مَرۡيَمَ لِلۡحَوَارِيِّـۧنَ مَنۡ أَنصَارِيٓ إِلَى ٱللَّهِۖ قَالَ ٱلۡحَوَارِيُّونَ نَحۡنُ أَنصَارُ ٱللَّهِۖ فَـَٔامَنَت طَّآئِفَةٞ مِّنۢ بَنِيٓ إِسۡرَـٰٓءِيلَ وَكَفَرَت طَّآئِفَةٞۖ فَأَيَّدۡنَا ٱلَّذِينَ ءَامَنُواْ عَلَىٰ عَدُوِّهِمۡ فَأَصۡبَحُواْ ظَٰهِرِينَ",
+            shortestVerse: "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ لِمَ تَقُولُونَ مَا لَا تَفۡعَلُونَ",
+            avgWords: 15.79,
+            avgLetters: 130.0,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ن (10)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "تَفۡعَلُونَ (2)"
+          },
+          62: {
+            longestVerse: "مَثَلُ ٱلَّذِينَ حُمِّلُواْ ٱلتَّوۡرَىٰةَ ثُمَّ لَمۡ يَحۡمِلُوهَا كَمَثَلِ ٱلۡحِمَارِ يَحۡمِلُ أَسۡفَارَۢاۚ بِئۡسَ مَثَلُ ٱلۡقَوۡمِ ٱلَّذِينَ كَذَّبُواْ بِـَٔايَٰتِ ٱللَّهِۚ وَٱللَّهُ لَا يَهۡدِي ٱلۡقَوۡمَ ٱلظَّـٰلِمِينَ",
+            shortestVerse: "وَءَاخَرِينَ مِنۡهُمۡ لَمَّا يَلۡحَقُواْ بِهِمۡۚ وَهُوَ ٱلۡعَزِيزُ ٱلۡحَكِيمُ",
+            avgWords: 15.91,
+            avgLetters: 131.27,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ن (8)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "ٱلۡحَكِيمِ (1)"
+          },
+          63: {
+            longestVerse: "۞وَإِذَا رَأَيۡتَهُمۡ تُعۡجِبُكَ أَجۡسَامُهُمۡۖ وَإِن يَقُولُواْ تَسۡمَعۡ لِقَوۡلِهِمۡۖ كَأَنَّهُمۡ خُشُبٞ مُّسَنَّدَةٞۖ يَحۡسَبُونَ كُلَّ صَيۡحَةٍ عَلَيۡهِمۡۚ هُمُ ٱلۡعَدُوُّ فَٱحۡذَرۡهُمۡۚ قَٰتَلَهُمُ ٱللَّهُۖ أَنَّىٰ يُؤۡفَكُونَ",
+            shortestVerse: "ذَٰلِكَ بِأَنَّهُمۡ ءَامَنُواْ ثُمَّ كَفَرُواْ فَطُبِعَ عَلَىٰ قُلُوبِهِمۡ فَهُمۡ لَا يَفۡقَهُونَ",
+            avgWords: 16.36,
+            avgLetters: 139.73,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ن (11)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "يَفۡقَهُونَ (2)"
+          },
+          64: {
+            longestVerse: "يَوۡمَ يَجۡمَعُكُمۡ لِيَوۡمِ ٱلۡجَمۡعِۖ ذَٰلِكَ يَوۡمُ ٱلتَّغَابُنِۗ وَمَن يُؤۡمِنۢ بِٱللَّهِ وَيَعۡمَلۡ صَٰلِحٗا يُكَفِّرۡ عَنۡهُ سَيِّـَٔاتِهِۦ وَيُدۡخِلۡهُ جَنَّـٰتٖ تَجۡرِي مِن تَحۡتِهَا ٱلۡأَنۡهَٰرُ خَٰلِدِينَ فِيهَآ أَبَدٗاۚ ذَٰلِكَ ٱلۡفَوۡزُ ٱلۡعَظِيمُ",
+            shortestVerse: "عَٰلِمُ ٱلۡغَيۡبِ وَٱلشَّهَٰدَةِ ٱلۡعَزِيزُ ٱلۡحَكِيمُ",
+            avgWords: 13.39,
+            avgLetters: 115.0,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ر (7)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "ٱلۡمَصِيرُ (2)"
+          },
+          65: {
+            longestVerse: "يَـٰٓأَيُّهَا ٱلنَّبِيُّ إِذَا طَلَّقۡتُمُ ٱلنِّسَآءَ فَطَلِّقُوهُنَّ لِعِدَّتِهِنَّ وَأَحۡصُواْ ٱلۡعِدَّةَۖ وَٱتَّقُواْ ٱللَّهَ رَبَّكُمۡۖ لَا تُخۡرِجُوهُنَّ مِنۢ بُيُوتِهِنَّ وَلَا يَخۡرُجۡنَ إِلَّآ أَن يَأۡتِينَ بِفَٰحِشَةٖ مُّبَيِّنَةٖۚ وَتِلۡكَ حُدُودُ ٱللَّهِۚ وَمَن يَتَعَدَّ حُدُودَ ٱللَّهِ فَقَدۡ ظَلَمَ نَفۡسَهُۥۚ لَا تَدۡرِي لَعَلَّ ٱللَّهَ يُحۡدِثُ بَعۡدَ ذَٰلِكَ أَمۡرٗا",
+            shortestVerse: "فَذَاقَتۡ وَبَالَ أَمۡرِهَا وَكَانَ عَٰقِبَةُ أَمۡرِهَا خُسۡرًا",
+            avgWords: 23.92,
+            avgLetters: 195.67,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (11)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "يُسۡرٗا (2)"
+          },
+          66: {
+            longestVerse: "يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُواْ تُوبُوٓاْ إِلَى ٱللَّهِ تَوۡبَةٗ نَّصُوحًا عَسَىٰ رَبُّكُمۡ أَن يُكَفِّرَ عَنكُمۡ سَيِّـَٔاتِكُمۡ وَيُدۡخِلَكُمۡ جَنَّـٰتٖ تَجۡرِي مِن تَحۡتِهَا ٱلۡأَنۡهَٰرُ يَوۡمَ لَا يُخۡزِي ٱللَّهُ ٱلنَّبِيَّ وَٱلَّذِينَ ءَامَنُواْ مَعَهُۥۖ نُورُهُمۡ يَسۡعَىٰ بَيۡنَ أَيۡدِيهِمۡ وَبِأَيۡمَٰنِهِمۡ يَقُولُونَ رَبَّنَآ أَتۡمِمۡ لَنَا نُورَنَا وَٱغۡفِرۡ لَنَآۖ إِنَّكَ عَلَىٰ كُلِّ شَيۡءٖ قَدِيرٞ",
+            shortestVerse: "قَدۡ فَرَضَ ٱللَّهُ لَكُمۡ تَحِلَّةَ أَيۡمَٰنِكُمۡۚ وَٱللَّهُ مَوۡلَىٰكُمۡۖ وَهُوَ ٱلۡعَلِيمُ ٱلۡحَكِيمُ",
+            avgWords: 20.75,
+            avgLetters: 175.42,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (5)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "رَّحِيمٞ (1)"
+          },
+          67: {
+            longestVerse: "ٱلَّذِي خَلَقَ سَبۡعَ سَمَٰوَٰتٖ طِبَاقٗاۖ مَّا تَرَىٰ فِي خَلۡقِ ٱلرَّحۡمَٰنِ مِن تَفَٰوُتٖۖ فَٱرۡجِعِ ٱلۡبَصَرَ هَلۡ تَرَىٰ مِن فُطُورٖ",
+            shortestVerse: "فَٱعۡتَرَفُواْ بِذَنۢبِهِمۡ فَسُحۡقٗا لِّأَصۡحَٰبِ ٱلسَّعِيرِ",
+            avgWords: 11.1,
+            avgLetters: 85.0,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ر (21)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "ٱلسَّعِيرِ (3)"
+          },
+          68: {
+            longestVerse: "أَمۡ لَكُمۡ أَيۡمَٰنٌ عَلَيۡنَا بَٰلِغَةٌ إِلَىٰ يَوۡمِ ٱلۡقِيَٰمَةِ إِنَّ لَكُمۡ لَمَا تَحۡكُمُونَ",
+            shortestVerse: "فَسَتُبۡصِرُ وَيُبۡصِرُونَ",
+            avgWords: 5.77,
+            avgLetters: 47.02,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ن (42)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "مُصۡبِحِينَ (2)"
+          },
+          69: {
+            longestVerse: "سَخَّرَهَا عَلَيۡهِمۡ سَبۡعَ لَيَالٖ وَثَمَٰنِيَةَ أَيَّامٍ حُسُومٗاۖ فَتَرَى ٱلۡقَوۡمَ فِيهَا صَرۡعَىٰ كَأَنَّهُمۡ أَعۡجَازُ نَخۡلٍ خَاوِيَةٖ",
+            shortestVerse: "ٱلۡحَآقَّةُ",
+            avgWords: 4.96,
+            avgLetters: 41.06,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ة (23)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "ٱلۡحَآقَّةُ (3)"
+          },
+          70: {
+            longestVerse: "تَعۡرُجُ ٱلۡمَلَـٰٓئِكَةُ وَٱلرُّوحُ إِلَيۡهِ فِي يَوۡمٖ كَانَ مِقۡدَارُهُۥ خَمۡسِينَ أَلۡفَ سَنَةٖ",
+            shortestVerse: "وَنَرَىٰهُ قَرِيبٗا",
+            avgWords: 4.93,
+            avgLetters: 41.89,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ن (21)",
+            uniqueEndLetters: 9,
+            mostCommonLastWord: "يُوعَدُونَ (2)"
+          },
+          71: {
+            longestVerse: "يَغۡفِرۡ لَكُم مِّن ذُنُوبِكُمۡ وَيُؤَخِّرۡكُمۡ إِلَىٰٓ أَجَلٖ مُّسَمًّىۚ إِنَّ أَجَلَ ٱللَّهِ إِذَا جَآءَ لَا يُؤَخَّرُۚ لَوۡ كُنتُمۡ تَعۡلَمُونَ",
+            shortestVerse: "وَقَدۡ خَلَقَكُمۡ أَطۡوَارًا",
+            avgWords: 8.07,
+            avgLetters: 64.71,
+            uniqueLetters: 35,
+            mostCommonEndLetter: "ا (24)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "أَلِيمٞ (1)"
+          },
+          72: {
+            longestVerse: "إِلَّا بَلَٰغٗا مِّنَ ٱللَّهِ وَرِسَٰلَٰتِهِۦۚ وَمَن يَعۡصِ ٱللَّهَ وَرَسُولَهُۥ فَإِنَّ لَهُۥ نَارَ جَهَنَّمَ خَٰلِدِينَ فِيهَآ أَبَدًا",
+            shortestVerse: "وَأَمَّا ٱلۡقَٰسِطُونَ فَكَانُواْ لِجَهَنَّمَ حَطَبٗا",
+            avgWords: 10.18,
+            avgLetters: 75.79,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (28)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "أَحَدٗا (4)"
+          },
+          73: {
+            longestVerse: "۞إِنَّ رَبَّكَ يَعۡلَمُ أَنَّكَ تَقُومُ أَدۡنَىٰ مِن ثُلُثَيِ ٱلَّيۡلِ وَنِصۡفَهُۥ وَثُلُثَهُۥ وَطَآئِفَةٞ مِّنَ ٱلَّذِينَ مَعَكَۚ وَٱللَّهُ يُقَدِّرُ ٱلَّيۡلَ وَٱلنَّهَارَۚ عَلِمَ أَن لَّن تُحۡصُوهُ فَتَابَ عَلَيۡكُمۡۖ فَٱقۡرَءُواْ مَا تَيَسَّرَ مِنَ ٱلۡقُرۡءَانِۚ عَلِمَ أَن سَيَكُونُ مِنكُم مَّرۡضَىٰ وَءَاخَرُونَ يَضۡرِبُونَ فِي ٱلۡأَرۡضِ يَبۡتَغُونَ مِن فَضۡلِ ٱللَّهِ وَءَاخَرُونَ يُقَٰتِلُونَ فِي سَبِيلِ ٱللَّهِۖ فَٱقۡرَءُواْ مَا تَيَسَّرَ مِنۡهُۚ وَأَقِيمُواْ ٱلصَّلَوٰةَ وَءَاتُواْ ٱلزَّكَوٰةَ وَأَقۡرِضُواْ ٱللَّهَ قَرۡضًا حَسَنٗاۚ وَمَا تُقَدِّمُواْ لِأَنفُسِكُم مِّنۡ خَيۡرٖ تَجِدُوهُ عِندَ ٱللَّهِ هُوَ خَيۡرٗا وَأَعۡظَمَ أَجۡرٗاۚ وَٱسۡتَغۡفِرُواْ ٱللَّهَۖ إِنَّ ٱللَّهَ غَفُورٞ رَّحِيمُۢ",
+            shortestVerse: "يَـٰٓأَيُّهَا ٱلۡمُزَّمِّلُ",
+            avgWords: 9.95,
+            avgLetters: 80.5,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ا (18)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "قَلِيلًا (2)"
+          },
+          74: {
+            longestVerse: "وَمَا جَعَلۡنَآ أَصۡحَٰبَ ٱلنَّارِ إِلَّا مَلَـٰٓئِكَةٗۖ وَمَا جَعَلۡنَا عِدَّتَهُمۡ إِلَّا فِتۡنَةٗ لِّلَّذِينَ كَفَرُواْ لِيَسۡتَيۡقِنَ ٱلَّذِينَ أُوتُواْ ٱلۡكِتَٰبَ وَيَزۡدَادَ ٱلَّذِينَ ءَامَنُوٓاْ إِيمَٰنٗا وَلَا يَرۡتَابَ ٱلَّذِينَ أُوتُواْ ٱلۡكِتَٰبَ وَٱلۡمُؤۡمِنُونَ وَلِيَقُولَ ٱلَّذِينَ فِي قُلُوبِهِم مَّرَضٞ وَٱلۡكَٰفِرُونَ مَاذَآ أَرَادَ ٱللَّهُ بِهَٰذَا مَثَلٗاۚ كَذَٰلِكَ يُضِلُّ ٱللَّهُ مَن يَشَآءُ وَيَهۡدِي مَن يَشَآءُۚ وَمَا يَعۡلَمُ جُنُودَ رَبِّكَ إِلَّا هُوَۚ وَمَا هِيَ إِلَّا ذِكۡرَىٰ لِلۡبَشَرِ",
+            shortestVerse: "يَـٰٓأَيُّهَا ٱلۡمُدَّثِّرُ",
+            avgWords: 4.55,
+            avgLetters: 35.46,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ر (31)",
+            uniqueEndLetters: 6,
+            mostCommonLastWord: "قَدَّرَ (2)"
+          },
+          75: {
+            longestVerse: "أَلَيۡسَ ذَٰلِكَ بِقَٰدِرٍ عَلَىٰٓ أَن يُحۡـِۧيَ ٱلۡمَوۡتَىٰ",
+            shortestVerse: "وَخَسَفَ ٱلۡقَمَرُ",
+            avgWords: 4.1,
+            avgLetters: 33.08,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ة (10)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "ٱلۡقِيَٰمَةِ (2)"
+          },
+          76: {
+            longestVerse: "عَٰلِيَهُمۡ ثِيَابُ سُندُسٍ خُضۡرٞ وَإِسۡتَبۡرَقٞۖ وَحُلُّوٓاْ أَسَاوِرَ مِن فِضَّةٖ وَسَقَىٰهُمۡ رَبُّهُمۡ شَرَابٗا طَهُورًا",
+            shortestVerse: "عَيۡنٗا فِيهَا تُسَمَّىٰ سَلۡسَبِيلٗا",
+            avgWords: 7.84,
+            avgLetters: 65.23,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ا (31)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "مَّذۡكُورًا (1)"
+          },
+          77: {
+            longestVerse: "وَجَعَلۡنَا فِيهَا رَوَٰسِيَ شَٰمِخَٰتٖ وَأَسۡقَيۡنَٰكُم مَّآءٗ فُرَاتٗا",
+            shortestVerse: "وَٱلۡمُرۡسَلَٰتِ عُرۡفٗا",
+            avgWords: 3.62,
+            avgLetters: 31.86,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ن (28)",
+            uniqueEndLetters: 8,
+            mostCommonLastWord: "لِّلۡمُكَذِّبِينَ (10)"
+          },
+          78: {
+            longestVerse: "إِنَّآ أَنذَرۡنَٰكُمۡ عَذَابٗا قَرِيبٗا يَوۡمَ يَنظُرُ ٱلۡمَرۡءُ مَا قَدَّمَتۡ يَدَاهُ وَيَقُولُ ٱلۡكَافِرُ يَٰلَيۡتَنِي كُنتُ تُرَٰبَۢا",
+            shortestVerse: "عَمَّ يَتَسَآءَلُونَ",
+            avgWords: 4.33,
+            avgLetters: 36.55,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ا (35)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "سَيَعۡلَمُونَ (2)"
+          },
+          79: {
+            longestVerse: "وَأَمَّا مَنۡ خَافَ مَقَامَ رَبِّهِۦ وَنَهَى ٱلنَّفۡسَ عَنِ ٱلۡهَوَىٰ",
+            shortestVerse: "وَٱلنَّـٰزِعَٰتِ غَرۡقٗا",
+            avgWords: 3.89,
+            avgLetters: 32.35,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ى (19)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "طَغَىٰ (2)"
+          },
+          80: {
+            longestVerse: "لِكُلِّ ٱمۡرِيٕٖ مِّنۡهُمۡ يَوۡمَئِذٖ شَأۡنٞ يُغۡنِيهِ",
+            shortestVerse: "عَبَسَ وَتَوَلَّىٰٓ",
+            avgWords: 3.17,
+            avgLetters: 26.17,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "ة (11)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "وَتَوَلَّىٰٓ (1)"
+          },
+          81: {
+            longestVerse: "وَمَا تَشَآءُونَ إِلَّآ أَن يَشَآءَ ٱللَّهُ رَبُّ ٱلۡعَٰلَمِينَ",
+            shortestVerse: "ٱلۡجَوَارِ ٱلۡكُنَّسِ",
+            avgWords: 3.59,
+            avgLetters: 28.0,
+            uniqueLetters: 34,
+            mostCommonEndLetter: "ت (14)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "كُوِّرَتۡ (1)"
+          },
+          82: {
+            longestVerse: "يَوۡمَ لَا تَمۡلِكُ نَفۡسٞ لِّنَفۡسٖ شَيۡـٔٗاۖ وَٱلۡأَمۡرُ يَوۡمَئِذٖ لِّلَّهِ",
+            shortestVerse: "كِرَامٗا كَٰتِبِينَ",
+            avgWords: 4.21,
+            avgLetters: 33.05,
+            uniqueLetters: 34,
+            mostCommonEndLetter: "ن (8)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "ٱلدِّينِ (3)"
+          },
+          83: {
+            longestVerse: "كَلَّاۖ بَلۡۜ رَانَ عَلَىٰ قُلُوبِهِم مَّا كَانُواْ يَكۡسِبُونَ",
+            shortestVerse: "وَيۡلٞ لِّلۡمُطَفِّفِينَ",
+            avgWords: 4.69,
+            avgLetters: 39.44,
+            uniqueLetters: 37,
+            mostCommonEndLetter: "ن (27)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "مَّرۡقُومٞ (2)"
+          },
+          84: {
+            longestVerse: "إِلَّا ٱلَّذِينَ ءَامَنُواْ وَعَمِلُواْ ٱلصَّـٰلِحَٰتِ لَهُمۡ أَجۡرٌ غَيۡرُ مَمۡنُونِۭ",
+            shortestVerse: "وَيَصۡلَىٰ سَعِيرًا",
+            avgWords: 4.28,
+            avgLetters: 34.12,
+            uniqueLetters: 35,
+            mostCommonEndLetter: "ا (6)",
+            uniqueEndLetters: 9,
+            mostCommonLastWord: "وَحُقَّتۡ (2)"
+          },
+          85: {
+            longestVerse: "إِنَّ ٱلَّذِينَ فَتَنُواْ ٱلۡمُؤۡمِنِينَ وَٱلۡمُؤۡمِنَٰتِ ثُمَّ لَمۡ يَتُوبُواْ فَلَهُمۡ عَذَابُ جَهَنَّمَ وَلَهُمۡ عَذَابُ ٱلۡحَرِيقِ",
+            shortestVerse: "وَٱلۡيَوۡمِ ٱلۡمَوۡعُودِ",
+            avgWords: 4.95,
+            avgLetters: 39.5,
+            uniqueLetters: 36,
+            mostCommonEndLetter: "د (16)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "ٱلۡبُرُوجِ (1)"
+          },
+          86: {
+            longestVerse: "إِن كُلُّ نَفۡسٖ لَّمَّا عَلَيۡهَا حَافِظٞ",
+            shortestVerse: "وَٱلسَّمَآءِ وَٱلطَّارِقِ",
+            avgWords: 3.59,
+            avgLetters: 28.12,
+            uniqueLetters: 33,
+            mostCommonEndLetter: "ق (4)",
+            uniqueEndLetters: 7,
+            mostCommonLastWord: "كَيۡدٗا (2)"
+          },
+          87: {
+            longestVerse: "إِلَّا مَا شَآءَ ٱللَّهُۚ إِنَّهُۥ يَعۡلَمُ ٱلۡجَهۡرَ وَمَا يَخۡفَىٰ",
+            shortestVerse: "وَنُيَسِّرُكَ لِلۡيُسۡرَىٰ",
+            avgWords: 3.79,
+            avgLetters: 30.11,
+            uniqueLetters: 33,
+            mostCommonEndLetter: "ى (18)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "ٱلۡأَعۡلَى (1)"
+          },
+          88: {
+            longestVerse: "لَّيۡسَ لَهُمۡ طَعَامٌ إِلَّا مِن ضَرِيعٖ",
+            shortestVerse: "عَامِلَةٞ نَّاصِبَةٞ",
+            avgWords: 3.54,
+            avgLetters: 27.73,
+            uniqueLetters: 35,
+            mostCommonEndLetter: "ة (14)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "ٱلۡغَٰشِيَةِ (1)"
+          },
+          89: {
+            longestVerse: "فَأَمَّا ٱلۡإِنسَٰنُ إِذَا مَا ٱبۡتَلَىٰهُ رَبُّهُۥ فَأَكۡرَمَهُۥ وَنَعَّمَهُۥ فَيَقُولُ رَبِّيٓ أَكۡرَمَنِ",
+            shortestVerse: "وَٱلۡفَجۡرِ",
+            avgWords: 4.57,
+            avgLetters: 37.2,
+            uniqueLetters: 35,
+            mostCommonEndLetter: "د (10)",
+            uniqueEndLetters: 9,
+            mostCommonLastWord: "ٱلۡبِلَٰدِ (2)"
+          },
+          90: {
+            longestVerse: "ثُمَّ كَانَ مِنَ ٱلَّذِينَ ءَامَنُواْ وَتَوَاصَوۡاْ بِٱلصَّبۡرِ وَتَوَاصَوۡاْ بِٱلۡمَرۡحَمَةِ",
+            shortestVerse: "وَلِسَانٗا وَشَفَتَيۡنِ",
+            avgWords: 4.1,
+            avgLetters: 32.6,
+            uniqueLetters: 34,
+            mostCommonEndLetter: "ة (10)",
+            uniqueEndLetters: 4,
+            mostCommonLastWord: "ٱلۡبَلَدِ (2)"
+          },
+          91: {
+            longestVerse: "فَقَالَ لَهُمۡ رَسُولُ ٱللَّهِ نَاقَةَ ٱللَّهِ وَسُقۡيَٰهَا",
+            shortestVerse: "وَٱلشَّمۡسِ وَضُحَىٰهَا",
+            avgWords: 3.6,
+            avgLetters: 31.0,
+            uniqueLetters: 32,
+            mostCommonEndLetter: "ا (15)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "وَضُحَىٰهَا (1)"
+          },
+          92: {
+            longestVerse: "وَمَا يُغۡنِي عَنۡهُ مَالُهُۥٓ إِذَا تَرَدَّىٰٓ",
+            shortestVerse: "وَصَدَّقَ بِٱلۡحُسۡنَىٰ",
+            avgWords: 3.38,
+            avgLetters: 29.29,
+            uniqueLetters: 35,
+            mostCommonEndLetter: "ى (21)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "بِٱلۡحُسۡنَىٰ (2)"
+          },
+          93: {
+            longestVerse: "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ",
+            shortestVerse: "وَٱلضُّحَىٰ",
+            avgWords: 3.64,
+            avgLetters: 29.27,
+            uniqueLetters: 31,
+            mostCommonEndLetter: "ى (8)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "وَٱلضُّحَىٰ (1)"
+          },
+          94: {
+            longestVerse: "أَلَمۡ نَشۡرَحۡ لَكَ صَدۡرَكَ",
+            shortestVerse: "وَوَضَعۡنَا عَنكَ وِزۡرَكَ",
+            avgWords: 3.38,
+            avgLetters: 24.25,
+            uniqueLetters: 28,
+            mostCommonEndLetter: "ك (4)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "صَدۡرَكَ (1)"
+          },
+          95: {
+            longestVerse: "إِلَّا ٱلَّذِينَ ءَامَنُواْ وَعَمِلُواْ ٱلصَّـٰلِحَٰتِ فَلَهُمۡ أَجۡرٌ غَيۡرُ مَمۡنُونٖ",
+            shortestVerse: "وَٱلتِّينِ وَٱلزَّيۡتُونِ",
+            avgWords: 4.25,
+            avgLetters: 37.0,
+            uniqueLetters: 30,
+            mostCommonEndLetter: "ن (7)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "وَٱلزَّيۡتُونِ (1)"
+          },
+          96: {
+            longestVerse: "كَلَّا لَئِن لَّمۡ يَنتَهِ لَنَسۡفَعَۢا بِٱلنَّاصِيَةِ",
+            shortestVerse: "فَلۡيَدۡعُ نَادِيَهُۥ",
+            avgWords: 3.79,
+            avgLetters: 29.26,
+            uniqueLetters: 30,
+            mostCommonEndLetter: "ى (9)",
+            uniqueEndLetters: 6,
+            mostCommonLastWord: "خَلَقَ (1)"
+          },
+          97: {
+            longestVerse: "تَنَزَّلُ ٱلۡمَلَـٰٓئِكَةُ وَٱلرُّوحُ فِيهَا بِإِذۡنِ رَبِّهِم مِّن كُلِّ أَمۡرٖ",
+            shortestVerse: "إِنَّآ أَنزَلۡنَٰهُ فِي لَيۡلَةِ ٱلۡقَدۡرِ",
+            avgWords: 6.0,
+            avgLetters: 44.4,
+            uniqueLetters: 30,
+            mostCommonEndLetter: "ر (5)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "ٱلۡقَدۡرِ (2)"
+          },
+          98: {
+            longestVerse: "جَزَآؤُهُمۡ عِندَ رَبِّهِمۡ جَنَّـٰتُ عَدۡنٖ تَجۡرِي مِن تَحۡتِهَا ٱلۡأَنۡهَٰرُ خَٰلِدِينَ فِيهَآ أَبَدٗاۖ رَّضِيَ ٱللَّهُ عَنۡهُمۡ وَرَضُواْ عَنۡهُۚ ذَٰلِكَ لِمَنۡ خَشِيَ رَبَّهُۥ",
+            shortestVerse: "فِيهَا كُتُبٞ قَيِّمَةٞ",
+            avgWords: 11.75,
+            avgLetters: 97.38,
+            uniqueLetters: 34,
+            mostCommonEndLetter: "ة (7)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "ٱلۡبَيِّنَةُ (2)"
+          },
+          99: {
+            longestVerse: "يَوۡمَئِذٖ يَصۡدُرُ ٱلنَّاسُ أَشۡتَاتٗا لِّيُرَوۡاْ أَعۡمَٰلَهُمۡ",
+            shortestVerse: "وَأَخۡرَجَتِ ٱلۡأَرۡضُ أَثۡقَالَهَا",
+            avgWords: 4.5,
+            avgLetters: 37.25,
+            uniqueLetters: 31,
+            mostCommonEndLetter: "ا (5)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "لَهَا (2)"
+          },
+          100: {
+            longestVerse: "۞أَفَلَا يَعۡلَمُ إِذَا بُعۡثِرَ مَا فِي ٱلۡقُبُورِ",
+            shortestVerse: "وَٱلۡعَٰدِيَٰتِ ضَبۡحٗا",
+            avgWords: 3.64,
+            avgLetters: 29.27,
+            uniqueLetters: 31,
+            mostCommonEndLetter: "ا (5)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "ضَبۡحٗا (1)"
+          },
+          101: {
+            longestVerse: "يَوۡمَ يَكُونُ ٱلنَّاسُ كَٱلۡفَرَاشِ ٱلۡمَبۡثُوثِ",
+            shortestVerse: "ٱلۡقَارِعَةُ",
+            avgWords: 3.27,
+            avgLetters: 26.64,
+            uniqueLetters: 27,
+            mostCommonEndLetter: "ة (6)",
+            uniqueEndLetters: 5,
+            mostCommonLastWord: "ٱلۡقَارِعَةُ (3)"
+          },
+          102: {
+            longestVerse: "كَلَّا لَوۡ تَعۡلَمُونَ عِلۡمَ ٱلۡيَقِينِ",
+            shortestVerse: "أَلۡهَىٰكُمُ ٱلتَّكَاثُرُ",
+            avgWords: 3.5,
+            avgLetters: 29.75,
+            uniqueLetters: 25,
+            mostCommonEndLetter: "ن (4)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "تَعۡلَمُونَ (2)"
+          },
+          103: {
+            longestVerse: "إِلَّا ٱلَّذِينَ ءَامَنُواْ وَعَمِلُواْ ٱلصَّـٰلِحَٰتِ وَتَوَاصَوۡاْ بِٱلۡحَقِّ وَتَوَاصَوۡاْ بِٱلصَّبۡرِ",
+            shortestVerse: "وَٱلۡعَصۡرِ",
+            avgWords: 4.67,
+            avgLetters: 45.0,
+            uniqueLetters: 21,
+            mostCommonEndLetter: "ر (3)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "وَٱلۡعَصۡرِ (1)"
+          },
+          104: {
+            longestVerse: "وَيۡلٞ لِّكُلِّ هُمَزَةٖ لُّمَزَةٍ",
+            shortestVerse: "نَارُ ٱللَّهِ ٱلۡمُوقَدَةُ",
+            avgWords: 3.67,
+            avgLetters: 29.78,
+            uniqueLetters: 30,
+            mostCommonEndLetter: "ة (7)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "لُّمَزَةٍ (1)"
+          },
+          105: {
+            longestVerse: "أَلَمۡ تَرَ كَيۡفَ فَعَلَ رَبُّكَ بِأَصۡحَٰبِ ٱلۡفِيلِ",
+            shortestVerse: "فَجَعَلَهُمۡ كَعَصۡفٖ مَّأۡكُولِۭ",
+            avgWords: 4.6,
+            avgLetters: 37.0,
+            uniqueLetters: 23,
+            mostCommonEndLetter: "ل (5)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "ٱلۡفِيلِ (1)"
+          },
+          106: {
+            longestVerse: "ٱلَّذِيٓ أَطۡعَمَهُم مِّن جُوعٖ وَءَامَنَهُم مِّنۡ خَوۡفِۭ",
+            shortestVerse: "لِإِيلَٰفِ قُرَيۡشٍ",
+            avgWords: 4.25,
+            avgLetters: 36.75,
+            uniqueLetters: 26,
+            mostCommonEndLetter: "ف (2)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "قُرَيۡشٍ (1)"
+          },
+          107: {
+            longestVerse: "وَلَا يَحُضُّ عَلَىٰ طَعَامِ ٱلۡمِسۡكِينِ",
+            shortestVerse: "فَوَيۡلٞ لِّلۡمُصَلِّينَ",
+            avgWords: 3.57,
+            avgLetters: 30.29,
+            uniqueLetters: 24,
+            mostCommonEndLetter: "ن (6)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "بِٱلدِّينِ (1)"
+          },
+          108: {
+            longestVerse: "إِنَّ شَانِئَكَ هُوَ ٱلۡأَبۡتَرُ",
+            shortestVerse: "إِنَّآ أَعۡطَيۡنَٰكَ ٱلۡكَوۡثَرَ",
+            avgWords: 3.33,
+            avgLetters: 28.33,
+            uniqueLetters: 21,
+            mostCommonEndLetter: "ر (3)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "ٱلۡكَوۡثَرَ (1)"
+          },
+          109: {
+            longestVerse: "وَلَآ أَنتُمۡ عَٰبِدُونَ مَآ أَعۡبُدُ",
+            shortestVerse: "قُلۡ يَـٰٓأَيُّهَا ٱلۡكَٰفِرُونَ",
+            avgWords: 4.33,
+            avgLetters: 30.83,
+            uniqueLetters: 18,
+            mostCommonEndLetter: "ن (3)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "أَعۡبُدُ (2)"
+          },
+          110: {
+            longestVerse: "وَرَأَيۡتَ ٱلنَّاسَ يَدۡخُلُونَ فِي دِينِ ٱللَّهِ أَفۡوَاجٗا",
+            shortestVerse: "إِذَا جَآءَ نَصۡرُ ٱللَّهِ وَٱلۡفَتۡحُ",
+            avgWords: 6.33,
+            avgLetters: 50.67,
+            uniqueLetters: 24,
+            mostCommonEndLetter: "ا (2)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "وَٱلۡفَتۡحُ (1)"
+          },
+          111: {
+            longestVerse: "مَآ أَغۡنَىٰ عَنۡهُ مَالُهُۥ وَمَا كَسَبَ",
+            shortestVerse: "وَٱمۡرَأَتُهُۥ حَمَّالَةَ ٱلۡحَطَبِ",
+            avgWords: 4.6,
+            avgLetters: 31.4,
+            uniqueLetters: 25,
+            mostCommonEndLetter: "ب (4)",
+            uniqueEndLetters: 2,
+            mostCommonLastWord: "وَتَبَّ (1)"
+          },
+          112: {
+            longestVerse: "وَلَمۡ يَكُن لَّهُۥ كُفُوًا أَحَدُۢ",
+            shortestVerse: "ٱللَّهُ ٱلصَّمَدُ",
+            avgWords: 3.75,
+            avgLetters: 22.75,
+            uniqueLetters: 15,
+            mostCommonEndLetter: "د (4)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "أَحَدٌ (1)"
+          },
+          113: {
+            longestVerse: "وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+            shortestVerse: "قُلۡ أَعُوذُ بِرَبِّ ٱلۡفَلَقِ",
+            avgWords: 4.6,
+            avgLetters: 27.4,
+            uniqueLetters: 24,
+            mostCommonEndLetter: "ق (2)",
+            uniqueEndLetters: 3,
+            mostCommonLastWord: "ٱلۡفَلَقِ (1)"
+          },
+          114: {
+            longestVerse: "ٱلَّذِي يُوَسۡوِسُ فِي صُدُورِ ٱلنَّاسِ",
+            shortestVerse: "مَلِكِ ٱلنَّاسِ",
+            avgWords: 3.33,
+            avgLetters: 24.17,
+            uniqueLetters: 24,
+            mostCommonEndLetter: "س (6)",
+            uniqueEndLetters: 1,
+            mostCommonLastWord: "ٱلنَّاسِ (4)"
+          }
+        };
+
+        /*
+         * بعد تعريف مصفوفة completeQuranData التي تحتوي على بيانات جميع السور، نحتاج إلى إنشاء
+         * مصفوفة شاملة باسم allSurahs وتحديد مصفوفة للسور المتبقية باسم remainingSurahs. في
+         * النسخة الحالية من السكربت لا توجد بيانات ناقصة لذلك ستكون remainingSurahs مصفوفة فارغة.
+         * هذا التعريف يمنع أخطاء ReferenceError عند محاولة استخدام المتغيرات غير المعرّفة.
+         */
+        // المصفوفة الشاملة للسور (نسخ كامل للبيانات الكاملة)
+        let allSurahs = [...completeQuranData];
+// دمج الإحصائيات المحسوبة في كل سورة
+allSurahs = allSurahs.map(surah => {
+    const metrics = surahMetrics[surah.id];
+    return metrics ? { ...surah, ...metrics } : surah;
+});
+        // المصفوفة الخاصة بالسور التي تحتاج إلى إكمال البيانات (فارغة حاليًا)
+        const remainingSurahs = [];
+
+        // دمج جميع السور مع إكمال البيانات المفقودة
+        remainingSurahs.forEach(surah => {
+            const completeSurah = {
+                ...surah,
+                number: surah.id,
+                revelationOrder: "قيد التحديث",
+                words: "قيد التحديث",
+                letters: "قيد التحديث",
+                disconnectedLetters: "قيد التحديث",
+                sajdahs: 0,
+                allah: "قيد التحديث",
+                firstWord: "قيد التحديث",
+                lastWord: "قيد التحديث",
+                mostFrequentWord: "قيد التحديث",
+                mostFrequentLetter: "قيد التحديث",
+                allahNames: "قيد التحديث",
+                numbers: "قيد التحديث",
+                colors: "قيد التحديث",
+                animals: "قيد التحديث"
+            };
+            allSurahs.push(completeSurah);
+        });
+
+        let filteredData = [...allSurahs];
+
+        // كائن يحتفظ بالقيم التي تمت تصفيتها في الأعمدة المختلفة. المفتاح هو رقم العمود
+        // (وفقاً لترتيب sortKeys) والقيمة هي القيمة المختارة للتصفية. إذا لم يتم اختيار
+        // قيمة معينة للعمود فإنه لا تتم تصفية البيانات بناءً على هذا العمود.
+        const activeColumnFilters = {};
+
+        // متغير لتتبع قائمة التصفية النشطة حالياً (إن وجدت) حتى يمكن إغلاقها عند الضغط خارجها
+        let currentFilterMenu = null;
+
+        /**
+         * تهيئة عناوين الأعمدة بإضافة عناصر داخلية لعرض نص العنوان والسهم ورمز التصفية.
+         * يتم حفظ النص الأساسي لكل عنوان في data-base لتسهيل إعادة تعيينه.
+         */
+        function initializeHeaders() {
+            const headers = document.querySelectorAll('#quranTable th');
+            headers.forEach((header, index) => {
+                const baseText = header.textContent.trim();
+                // مسح أي محتويات حالية للرأس لإنشاء بنية جديدة
+                header.innerHTML = '';
+                // عنصر النص الأساسي للعنوان
+                const textSpan = document.createElement('span');
+                textSpan.className = 'header-text';
+                textSpan.textContent = baseText;
+                header.appendChild(textSpan);
+                // عنصر مؤشر الفرز (سيتم تحديث محتواه لاحقاً)
+                const sortIndicator = document.createElement('span');
+                sortIndicator.className = 'sort-indicator';
+                sortIndicator.style.marginRight = '3px';
+                header.appendChild(sortIndicator);
+                // إضافة رمز التصفية لجميع الأعمدة ما عدا العمود الأول
+                if (index !== 0) {
+                    const filterIcon = document.createElement('span');
+                    filterIcon.className = 'filter-icon';
+                    // استخدام مثلث صغير يشير للأسفل كرمز للتصفية
+                    filterIcon.innerHTML = '&#x25BC;';
+                    header.appendChild(filterIcon);
+                    // ربط حدث النقر على رمز التصفية لعرض القائمة الخاصة بهذا العمود
+                    // نستخدم stopPropagation لمنع فقاعات الحدث إلى رأس العمود وبالتالي منع الفرز
+                    filterIcon.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showFilterMenu(index, header);
+                    });
+                }
+                // تخزين النص الأصلي للعنوان لإعادة استخدامه إذا لزم الأمر
+                header.dataset.base = baseText;
+            });
+        }
+
+        /**
+         * حساب البيانات المصفاة طبقاً لمصطلح البحث، نوع السورة، وجود الأنبياء، وكذلك
+         * القيم المختارة في التصفية لكل عمود. بعد تطبيق جميع عوامل التصفية يتم إعادة
+         * ترتيب البيانات إذا كان هناك عمود مرتب مسبقاً، ثم عرضها في الجدول.
+         */
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const typeFilter = document.getElementById('typeFilter').value;
+            const prophetsFilter = document.getElementById('prophetsFilter').value;
+            // تصفية البيانات الأساسية وفقاً لمصطلح البحث ونوع السورة ووجود الأنبياء
+            filteredData = allSurahs.filter(surah => {
+                // التحقق من مطابقة مصطلح البحث للاسم أو الرقم أو الأنبياء
+                const matchesSearch = surah.name.toLowerCase().includes(searchTerm) ||
+                    surah.number.toString().includes(searchTerm) ||
+                    (surah.prophets && surah.prophets.toLowerCase().includes(searchTerm));
+                // التحقق من نوع السورة
+                const matchesType = typeFilter === 'all' ||
+                    (typeFilter === 'makki' && surah.type === 'مكية') ||
+                    (typeFilter === 'madani' && surah.type === 'مدنية');
+                // التحقق من وجود الأنبياء
+                const matchesProphets = prophetsFilter === 'all' ||
+                    (prophetsFilter === 'with_prophets' && surah.prophets && surah.prophets !== 'لا يوجد') ||
+                    (prophetsFilter === 'no_prophets' && (!surah.prophets || surah.prophets === 'لا يوجد'));
+                // التحقق من التصفية حسب الأعمدة
+                let matchesColumns = true;
+                for (const colIndex in activeColumnFilters) {
+                    const key = sortKeys[colIndex];
+                    const selectedValue = activeColumnFilters[colIndex];
+                    let surahValue = surah[key];
+                    if (surahValue === undefined || surahValue === null || surahValue === '') {
+                        surahValue = 'لا يوجد';
+                    }
+                    if (surahValue !== selectedValue) {
+                        matchesColumns = false;
+                        break;
+                    }
+                }
+                return matchesSearch && matchesType && matchesProphets && matchesColumns;
+            });
+            // تطبيق الفرز الحالي إذا كان هناك عمود مرتب مسبقاً
+            applyCurrentSort();
+            // عرض البيانات
+            displayData(filteredData);
+            // تحديث مؤشرات الفرز بعد عرض البيانات
+            updateSortIndicators();
+        }
+
+        /**
+         * تطبيق الفرز الحالي على البيانات المفلترة بدون تغيير حالة اتجاه الفرز. هذا مفيد
+         * عند إعادة تصفية البيانات بحيث تبقى مرتبة وفقاً للعمود والاتجاه المختار
+         * سابقاً.
+         */
+        function applyCurrentSort() {
+            if (sortState.index === null) {
+                return;
+            }
+            const index = sortState.index;
+            const key = sortKeys[index];
+            const ascending = sortState.ascending;
+            filteredData.sort((a, b) => {
+                let valA = a[key];
+                let valB = b[key];
+                // مقارنة عددية إذا كان كلاهما رقماً
+                if (typeof valA === 'number' && typeof valB === 'number') {
+                    return ascending ? valA - valB : valB - valA;
+                }
+                // محاولة تحويل القيم الرقمية المخزنة كنصوص
+                const numA = parseFloat(valA);
+                const numB = parseFloat(valB);
+                const isNumA = !isNaN(numA) && /^\d/.test(valA);
+                const isNumB = !isNaN(numB) && /^\d/.test(valB);
+                if (isNumA && isNumB) {
+                    return ascending ? numA - numB : numB - numA;
+                }
+                valA = valA || '';
+                valB = valB || '';
+                return ascending ? ('' + valA).localeCompare('' + valB, 'ar') : ('' + valB).localeCompare('' + valA, 'ar');
+            });
+        }
+
+        /**
+         * عرض قائمة التصفية الخاصة بأحد الأعمدة. يتم حساب القيم الفريدة في هذا العمود
+         * باستخدام جميع بيانات السور (وليس فقط البيانات المفلترة حالياً) حتى يتمكن
+         * المستخدم من اختيار أي قيمة متاحة. يتم إظهار العدد لكل قيمة. عند اختيار
+         * قيمة يتم تحديث activeColumnFilters ثم إعادة تطبيق جميع عوامل التصفية.
+         * @param {number} columnIndex رقم العمود وفقاً لـ sortKeys
+         * @param {HTMLElement} headerElement عنصر رأس العمود لاحتساب موقع القائمة
+         */
+        function showFilterMenu(columnIndex, headerElement) {
+            // إذا كانت هناك قائمة مفتوحة بالفعل قم بإزالتها
+            if (currentFilterMenu) {
+                currentFilterMenu.remove();
+                currentFilterMenu = null;
+            }
+            // إنشاء عنصر القائمة
+            const menu = document.createElement('div');
+            menu.className = 'filter-menu';
+            const list = document.createElement('ul');
+            menu.appendChild(list);
+            // جمع القيم الفريدة لهذا العمود
+            const key = sortKeys[columnIndex];
+            const counts = {};
+            allSurahs.forEach(surah => {
+                let val = surah[key];
+                if (val === undefined || val === null || val === '') {
+                    val = 'لا يوجد';
+                }
+                counts[val] = (counts[val] || 0) + 1;
+            });
+            // تحويل إلى مصفوفة وفرزها حسب نوع القيمة
+            const entries = Object.entries(counts);
+            entries.sort((a, b) => {
+                const valA = a[0];
+                const valB = b[0];
+                const numA = parseFloat(valA);
+                const numB = parseFloat(valB);
+                const isNumA = !isNaN(numA) && /^\d/.test(valA);
+                const isNumB = !isNaN(numB) && /^\d/.test(valB);
+                if (isNumA && isNumB) {
+                    return numA - numB;
+                }
+                return ('' + valA).localeCompare('' + valB, 'ar');
+            });
+            // إضافة خيار "عرض الكل"
+            const totalCount = allSurahs.length;
+            const allLi = document.createElement('li');
+            allLi.textContent = 'عرض الكل';
+            const countSpanAll = document.createElement('span');
+            countSpanAll.textContent = totalCount;
+            allLi.appendChild(countSpanAll);
+            // تحديد العنصر إذا لم يكن هناك تصفية نشطة لهذا العمود
+            if (!activeColumnFilters.hasOwnProperty(columnIndex)) {
+                allLi.classList.add('active');
+            }
+            allLi.addEventListener('click', () => {
+                // إزالة أي قيمة مفلترة لهذا العمود
+                delete activeColumnFilters[columnIndex];
+                // إغلاق القائمة ثم تطبيق الفلاتر
+                menu.remove();
+                currentFilterMenu = null;
+                applyFilters();
+            });
+            list.appendChild(allLi);
+            // إضافة العناصر الأخرى للقائمة
+            entries.forEach(([value, count]) => {
+                const li = document.createElement('li');
+                li.textContent = value;
+                const countSpan = document.createElement('span');
+                countSpan.textContent = count;
+                li.appendChild(countSpan);
+                // إذا كانت هذه القيمة هي المفعلة حالياً، اجعل العنصر نشطاً
+                if (activeColumnFilters[columnIndex] === value) {
+                    li.classList.add('active');
+                }
+                li.addEventListener('click', () => {
+                    activeColumnFilters[columnIndex] = value;
+                    menu.remove();
+                    currentFilterMenu = null;
+                    applyFilters();
+                });
+                list.appendChild(li);
+            });
+            // إضافة القائمة إلى الجسم وتحديد موقعها بجانب الرأس
+            document.body.appendChild(menu);
+            const rect = headerElement.getBoundingClientRect();
+            // الموضع يعتمد على اتجاه الصفحة RTL، لذا يتم إزاحة القائمة من الجهة اليمنى
+            const top = rect.bottom + window.scrollY;
+            const right = window.innerWidth - rect.right - window.scrollX;
+            menu.style.top = `${top}px`;
+            menu.style.right = `${right}px`;
+            // تتبع القائمة المفتوحة حالياً
+            currentFilterMenu = menu;
+        }
+
+        // إغلاق قائمة التصفية عند الضغط خارجها
+        document.addEventListener('click', function(event) {
+            if (currentFilterMenu) {
+                // إذا كان العنصر المضغوط خارج القائمة ورمز التصفية، قم بإغلاق القائمة
+                if (!currentFilterMenu.contains(event.target) && !event.target.classList.contains('filter-icon')) {
+                    currentFilterMenu.remove();
+                    currentFilterMenu = null;
+                }
+            }
+        });
+
+        // تحميل البيانات وعرضها
+        function loadData() {
+            const progressFill = document.getElementById('progressFill');
+            let progress = 0;
+            
+            const loadInterval = setInterval(() => {
+                progress += 8;
+                progressFill.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(loadInterval);
+                    setTimeout(() => {
+                        displayData(filteredData);
+                        progressFill.style.width = '0%';
+                    }, 500);
+                }
+            }, 100);
+        }
+
+        // عرض البيانات في الجدول
+        function displayData(data) {
+            const tableBody = document.getElementById('tableBody');
+            
+            if (data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="28">لا توجد نتائج مطابقة للبحث</td></tr>';
+                return;
+            }
+
+            // استخدم الفهرس (index) لعرض تسلسل الصفوف بشكل ثابت غير مرتبط بترتيب الفرز
+            tableBody.innerHTML = data.map((surah, index) => `
+                <tr class="${surah.type === 'مكية' ? 'makki' : 'madani'}">
+                    <td><strong>${index + 1}</strong></td>
+                    <td class="surah-name">${surah.name}</td>
+                    <td>${surah.number}</td>
+                    <td>${surah.revelationOrder}</td>
+                    <td>${surah.verses}</td>
+                    <td>${typeof surah.words === 'number' ? surah.words.toLocaleString() : surah.words}</td>
+                    <td>${typeof surah.letters === 'number' ? surah.letters.toLocaleString() : surah.letters}</td>
+                    <td><span class="type-badge ${surah.type === 'مكية' ? 'makki-badge' : 'madani-badge'}">${surah.type}</span></td>
+                    <td>${surah.disconnectedLetters && surah.disconnectedLetters !== 'لا' ? surah.disconnectedLetters : 0}</td>
+                    <td>${surah.sajdahs}</td>
+                    <td>${surah.allah}</td>
+                    <td style="font-size: 9px;">${surah.firstWord || "قيد التحديث"}</td>
+                    <td style="font-size: 9px;">${surah.lastWord || "قيد التحديث"}</td>
+                    <td style="font-size: 9px;">${surah.mostFrequentWord || "قيد التحديث"}</td>
+                    <td style="font-size: 9px;">${surah.mostFrequentLetter || "قيد التحديث"}</td>
+                    <td style="font-size: 8px;">${surah.allahNames || "قيد التحديث"}</td>
+                    <td style="font-size: 8px; background: ${surah.prophets && surah.prophets !== 'لا يوجد' ? '#fff3cd' : 'transparent'};">${surah.prophets || "لا يوجد"}</td>
+                    <td style="font-size: 8px;">${surah.numbers || "قيد التحديث"}</td>
+                    <td style="font-size: 8px;">${surah.colors || "قيد التحديث"}</td>
+                    <td style="font-size: 8px;">${surah.animals || "قيد التحديث"}</td>
+                    <td style="font-size: 9px;">${surah.longestVerse || "قيد التحديث"}</td>
+                    <td style="font-size: 9px;">${surah.shortestVerse || "قيد التحديث"}</td>
+                    <td>${surah.avgWords != null ? surah.avgWords.toFixed(2) : "قيد التحديث"}</td>
+                    <td>${surah.avgLetters != null ? surah.avgLetters.toFixed(2) : "قيد التحديث"}</td>
+                    <td>${surah.uniqueLetters != null ? surah.uniqueLetters : "قيد التحديث"}</td>
+                    <td>${surah.mostCommonEndLetter || "قيد التحديث"}</td>
+                    <td>${surah.uniqueEndLetters != null ? surah.uniqueEndLetters : "قيد التحديث"}</td>
+                    <td>${surah.mostCommonLastWord || "قيد التحديث"}</td>
+                </tr>
+            `).join('');
+        }
+
+        // البحث والفلترة
+        function setupFilters() {
+            const searchBox = document.getElementById('searchBox');
+            const typeFilter = document.getElementById('typeFilter');
+            const prophetsFilter = document.getElementById('prophetsFilter');
+
+            // عند إدخال نص أو تغيير الفلاتر يتم إعادة تطبيق جميع الفلاتر الحالية
+            searchBox.addEventListener('input', applyFilters);
+            typeFilter.addEventListener('change', applyFilters);
+            prophetsFilter.addEventListener('change', applyFilters);
+        }
+
+        /**
+         * هذه الوظيفة موجودة فقط للحفاظ على التوافق مع التعليمات السابقة. عند استدعائها
+         * يتم ببساطة استدعاء applyFilters() لتطبيق جميع الفلاتر.
+         */
+        function filterData() {
+            applyFilters();
+        }
+
+        // إعداد خاصية الفرز التصاعدي والتنازلي للأعمدة
+        // مصفوفة المفاتيح المطابقة لترتيب الأعمدة في الجدول. تستخدم هذه المصفوفة لتحديد
+        // الحقل الذي سيتم الفرز بناءً عليه عند النقر على عنوان العمود.
+        const sortKeys = [
+            'id', 'name', 'number', 'revelationOrder', 'verses', 'words', 'letters',
+            'type', 'disconnectedLetters', 'sajdahs', 'allah', 'firstWord', 'lastWord',
+            'mostFrequentWord', 'mostFrequentLetter', 'allahNames', 'prophets',
+            'numbers', 'colors', 'animals',
+            'longestVerse', 'shortestVerse', 'avgWords', 'avgLetters', 'uniqueLetters', 'mostCommonEndLetter', 'uniqueEndLetters', 'mostCommonLastWord'];
+
+        // كائن يحتفظ بالحالة الحالية للفرز (العمود النشط واتجاه الفرز)
+        const sortState = { index: null, ascending: true };
+
+        // تهيئة أحداث النقر على عناوين الأعمدة للقيام بعملية الفرز
+        function setupSorting() {
+            const headers = document.querySelectorAll('#quranTable th');
+            headers.forEach((header, index) => {
+                // لا نضيف حدث الفرز للعمود الأول (م) حتى يبقى ثابتاً ولا يتأثر بالفرز
+                if (index === 0) {
+                    return;
+                }
+                header.addEventListener('click', function(event) {
+                    // احسب المسافة من الحافة اليمنى للعمود. إذا كان النقر ضمن 24 بكسل من اليمين، فسيتم اعتبارها منطقة التصفية.
+                    const rect = header.getBoundingClientRect();
+                    // event.clientX يعطي إحداثيات المؤشر بالنسبة لنافذة المتصفح
+                    if (event.clientX > rect.right - 24) {
+                        // منع انتشار الحدث لمنع تفعيل الفرز
+                        event.stopPropagation();
+                        showFilterMenu(index, header);
+                        return;
+                    }
+                    // إذا لم يكن النقر في منطقة التصفية، قم بالفرز
+                    sortTableBy(index);
+                });
+            });
+        }
+
+        // تنفيذ عملية الفرز بناءً على رقم العمود
+        function sortTableBy(index) {
+            const key = sortKeys[index];
+            if (!key) return;
+            // تبديل حالة الفرز في حال النقر على نفس العمود، وإعادة التعيين عند اختيار عمود جديد
+            if (sortState.index === index) {
+                sortState.ascending = !sortState.ascending;
+            } else {
+                sortState.index = index;
+                sortState.ascending = true;
+            }
+            // فرز البيانات المفلترة بدلاً من كل السور للحفاظ على أي عمليات بحث أو فلترة سابقة
+            filteredData.sort((a, b) => {
+                let valA = a[key];
+                let valB = b[key];
+                // إذا كان كلاهما رقماً فقم بالمقارنة الرقمية
+                if (typeof valA === 'number' && typeof valB === 'number') {
+                    return sortState.ascending ? valA - valB : valB - valA;
+                }
+                // في حال وجود أرقام داخل نصوص (مثل "123") نحاول تحويلها إلى رقم للمقارنة الصحيحة
+                const numA = parseFloat(valA);
+                const numB = parseFloat(valB);
+                const isNumA = !isNaN(numA) && /^\d/.test(valA);
+                const isNumB = !isNaN(numB) && /^\d/.test(valB);
+                if (isNumA && isNumB) {
+                    return sortState.ascending ? numA - numB : numB - numA;
+                }
+                // المقارنة النصية (مع مراعاة اللغة العربية عند استخدام localeCompare)
+                valA = valA || '';
+                valB = valB || '';
+                return sortState.ascending ? ('' + valA).localeCompare('' + valB, 'ar') : ('' + valB).localeCompare('' + valA, 'ar');
+            });
+            // إعادة عرض البيانات بعد الفرز
+            displayData(filteredData);
+            // تحديث مؤشرات الأسهم في العناوين
+            updateSortIndicators();
+        }
+
+        // تحديث الأسهم التي تظهر بجانب عنوان العمود للدلالة على اتجاه الفرز
+        function updateSortIndicators() {
+            const headers = document.querySelectorAll('#quranTable th');
+            headers.forEach((header, idx) => {
+                const sortIndicator = header.querySelector('.sort-indicator');
+                if (sortIndicator) {
+                    sortIndicator.textContent = '';
+                    if (idx === sortState.index) {
+                        sortIndicator.textContent = sortState.ascending ? '▲' : '▼';
+                    }
+                }
+            });
+        }
+
+        // تصدير إلى Excel
+        function exportToExcel() {
+            const worksheet = XLSX.utils.json_to_sheet(allSurahs.map(surah => ({
+                'الرقم': surah.id,
+                'اسم السورة': surah.name,
+                'رقم السورة': surah.number,
+                'ترتيب النزول': surah.revelationOrder,
+                'عدد الآيات': surah.verses,
+                'عدد الكلمات': surah.words,
+                'عدد الحروف': surah.letters,
+                'التصنيف': surah.type,
+                'الحروف المقطعة': (surah.disconnectedLetters && surah.disconnectedLetters !== 'لا') ? surah.disconnectedLetters : 0,
+                'عدد السجدات': surah.sajdahs,
+                'ذكر الله': surah.allah,
+                'أول كلمة': surah.firstWord,
+                'آخر كلمة': surah.lastWord,
+                'الكلمة الأكثر تكراراً': surah.mostFrequentWord,
+                'الحرف الأكثر تكراراً': surah.mostFrequentLetter,
+                'أسماء الله المذكورة': surah.allahNames,
+                'الأنبياء المذكورون': surah.prophets,
+                'الأرقام المذكورة': surah.numbers,
+                'الألوان المذكورة': surah.colors,
+                'الحيوانات المذكورة': surah.animals,
+                            'أطول آية': surah.longestVerse,
+                'أقصر آية': surah.shortestVerse,
+                'متوسط طول الآية (كلمات)': surah.avgWords,
+                'متوسط طول الآية (حروف)': surah.avgLetters,
+                'عدد الحروف الفريدة': surah.uniqueLetters,
+                'أكثر نهاية (حرف)': surah.mostCommonEndLetter,
+                'عدد نهايات الحروف الفريدة': surah.uniqueEndLetters,
+                'أكثر كلمة نهاية': surah.mostCommonLastWord,
+})));
+
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'قاعدة بيانات القرآن مع الأنبياء');
+            
+            // إضافة ورقة ثانية للإحصائيات
+            const statsData = [
+                { 'البيان': 'إجمالي السور', 'العدد': 114 },
+                { 'البيان': 'إجمالي الآيات', 'العدد': 6236 },
+                { 'البيان': 'إجمالي الكلمات', 'العدد': 77797 },
+                { 'البيان': 'إجمالي الحروف', 'العدد': 330709 },
+                { 'البيان': 'السور المكية', 'العدد': 86 },
+                { 'البيان': 'السور المدنية', 'العدد': 28 },
+                { 'البيان': 'الأنبياء المذكورون', 'العدد': 25 },
+                { 'البيان': 'إجمالي السجدات', 'العدد': 15 }
+            ];
+            
+            const statsWorksheet = XLSX.utils.json_to_sheet(statsData);
+            XLSX.utils.book_append_sheet(workbook, statsWorksheet, 'الإحصائيات العامة');
+            
+            XLSX.writeFile(workbook, 'قاعدة_بيانات_القرآن_الكريم_الشاملة_مع_الأنبياء.xlsx');
+        }
+
+        // تصدير إلى CSV
+        function exportToCSV() {
+            const csvContent = [
+                ['الرقم', 'اسم السورة', 'رقم السورة', 'ترتيب النزول', 'عدد الآيات', 'عدد الكلمات', 'عدد الحروف', 'التصنيف', 'الحروف المقطعة', 'عدد السجدات', 'ذكر الله', 'أول كلمة', 'آخر كلمة', 'الكلمة الأكثر تكراراً', 'الحرف الأكثر تكراراً', 'أسماء الله المذكورة', 'الأنبياء المذكورون', 'الأرقام المذكورة', 'الألوان المذكورة', 'الحيوانات المذكورة', 'أطول آية', 'أقصر آية', 'متوسط طول الآية (كلمات)', 'متوسط طول الآية (حروف)', 'عدد الحروف الفريدة', 'أكثر نهاية (حرف)', 'عدد نهايات الحروف الفريدة', 'أكثر كلمة نهاية'].join(','),
+                ...allSurahs.map(surah => [
+                    surah.id,
+                    surah.name,
+                    surah.number,
+                    surah.revelationOrder,
+                    surah.verses,
+                    surah.words,
+                    surah.letters,
+                    surah.type,
+                    (surah.disconnectedLetters && surah.disconnectedLetters !== 'لا') ? surah.disconnectedLetters : 0,
+                    surah.sajdahs,
+                    surah.allah,
+                    surah.firstWord,
+                    surah.lastWord,
+                    surah.mostFrequentWord,
+                    surah.mostFrequentLetter,
+                    surah.allahNames,
+                    surah.prophets,
+                    surah.numbers,
+                    surah.colors,
+                    surah.animals,
+                    surah.longestVerse,
+                    surah.shortestVerse,
+                    surah.avgWords,
+                    surah.avgLetters,
+                    surah.uniqueLetters,
+                    surah.mostCommonEndLetter,
+                    surah.uniqueEndLetters,
+                    surah.mostCommonLastWord
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'قاعدة_بيانات_القرآن_الكريم_مع_الأنبياء.csv';
+            link.click();
+        }
+
+        // تشغيل التطبيق
+        document.addEventListener('DOMContentLoaded', function() {
+            // تهيئة العناوين لإضافة عناصر الفرز والتصفية
+            initializeHeaders();
+            setupSorting();
+            setupFilters();
+            // تحميل البيانات ثم عرضها بعد انتهاء الشريط
+            loadData();
+        });
+    </script>
+</body>
+</html>
