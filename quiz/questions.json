@@ -1,1 +1,39 @@
+{
+  "meta": {
+    "name": "مسابقة قاعدة بيانات القرآن الكريم",
+    "description": "أسئلة تُولَّد ديناميكيًا من ملف quran-data.json نفسه لضمان دقتها وتنوّعها",
+    "source": "quran-data.json"
+  },
+  "levels": ["مبتدئ", "متوسط", "متقدم"],
+  "amounts": [5, 10, 15, 20],
+  "points": { "مبتدئ": 10, "متوسط": 15, "متقدم": 20 },
+  "encouragement": [
+    { "min": 90, "text": "ما شاء الله! إتقانٌ رائع وحفظٌ متين 🌟", "icon": "fa-award" },
+    { "min": 70, "text": "أحسنت! مستوى ممتاز، واصِل التميّز 👏", "icon": "fa-trophy" },
+    { "min": 50, "text": "جيّد جدًّا، أنت في الطريق الصحيح 💪", "icon": "fa-thumbs-up" },
+    { "min": 0,  "text": "لا بأس، التعلّم رحلة — حاوِل مرّة أخرى وستتحسّن 📚", "icon": "fa-seedling" }
+  ],
+  "questions": [
+    { "id": "b_type",     "level": "مبتدئ", "gen": "type",         "prompt": "سورة {name}: مكية أم مدنية؟" },
+    { "id": "b_verses",   "level": "مبتدئ", "gen": "field",        "field": "verses",          "unit": "آية",  "prompt": "كم عدد آيات سورة {name}؟" },
+    { "id": "b_longest",  "level": "مبتدئ", "gen": "extreme",      "field": "verses", "mode": "max", "prompt": "أيُّ السور التالية أطولُ بعدد الآيات؟" },
+    { "id": "b_shortest", "level": "مبتدئ", "gen": "extreme",      "field": "verses", "mode": "min", "prompt": "أيُّ السور التالية أقصرُ بعدد الآيات؟" },
+    { "id": "b_whichv",   "level": "مبتدئ", "gen": "whichByField", "field": "verses",          "unit": "آية",  "prompt": "أيُّ سورةٍ عددُ آياتها {value} آية؟" },
+    { "id": "b_order",    "level": "مبتدئ", "gen": "field",        "field": "revelationOrder",                 "prompt": "ما ترتيبُ نزول سورة {name}؟" },
 
+    { "id": "m_words",    "level": "متوسط", "gen": "field",        "field": "words",           "unit": "كلمة", "prompt": "كم عدد كلمات سورة {name}؟" },
+    { "id": "m_letters",  "level": "متوسط", "gen": "field",        "field": "letters",         "unit": "حرف",  "prompt": "كم عدد حروف سورة {name}؟" },
+    { "id": "m_allah",    "level": "متوسط", "gen": "field",        "field": "allah",           "unit": "مرة",  "prompt": "كم مرّةً ذُكِر لفظُ الجلالة (الله) في سورة {name}؟" },
+    { "id": "m_sajdah",   "level": "متوسط", "gen": "field",        "field": "sajdahs",         "unit": "سجدة", "prompt": "كم سجدةً في سورة {name}؟" },
+    { "id": "m_mostword", "level": "متوسط", "gen": "extreme",      "field": "words",  "mode": "max", "prompt": "أيُّ السور التالية أكثرُ كلماتٍ؟" },
+    { "id": "m_mostallah","level": "متوسط", "gen": "extreme",      "field": "allah",  "mode": "max", "prompt": "أيُّ السور التالية أكثرُ ذِكرًا للفظ الجلالة (الله)؟" },
+    { "id": "m_whicho",   "level": "متوسط", "gen": "whichByField", "field": "revelationOrder",                 "prompt": "أيُّ سورةٍ كان ترتيبُ نزولها {value}؟" },
+
+    { "id": "a_prophetin","level": "متقدم", "gen": "prophetIn",                                                "prompt": "أيُّ نبيٍّ مِمّا يلي ذُكِر في سورة {name}؟" },
+    { "id": "a_prophetwh","level": "متقدم", "gen": "prophetWhere",                                             "prompt": "في أيِّ سورةٍ مِمّا يلي ذُكِر النبيُّ {prophet}؟" },
+    { "id": "a_disc",     "level": "متقدم", "gen": "disconnected",                                             "prompt": "بأيِّ الحروف المقطَّعة تبدأ سورة {name}؟" },
+    { "id": "a_mletters", "level": "متقدم", "gen": "extreme",      "field": "letters", "mode": "max", "prompt": "أيُّ السور التالية أكثرُ حروفًا؟" },
+    { "id": "a_mostprop", "level": "متقدم", "gen": "mostProphet",                                              "prompt": "أيُّ نبيٍّ ذُكِر في أكبر عددٍ من السور؟" },
+    { "id": "a_uniqueL",  "level": "متقدم", "gen": "field",        "field": "allah",           "unit": "مرة",  "prompt": "كم مرّةً ذُكِر لفظُ الجلالة في سورة {name}؟" }
+  ]
+}
