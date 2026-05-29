@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2c3e50">
+    <title>إحصائيات القرآن الكريم — رسوم بيانية</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+    <script src="stats.js" defer></script>
+    <style>
+        /* تخطيط خاص بصفحة الإحصائيات */
+        .charts-grid {
+            padding: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 22px;
+        }
+        .chart-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            padding: 18px;
+        }
+        .chart-card h3 {
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-wrap { position: relative; height: 300px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fa-solid fa-chart-pie"></i> إحصائيات القرآن الكريم</h1>
+                <p class="subtitle">تمثيل بياني لبيانات السور الـ114</p>
+                <nav class="header-links">
+                    <a href="index.html"><i class="fa-solid fa-table"></i> العودة إلى الجدول</a>
+                </nav>
+            </div>
+        </header>
+
+        <section class="statistics" id="summaryCards"></section>
+
+        <section class="charts-grid">
+            <div class="chart-card">
+                <h3><i class="fa-solid fa-kaaba"></i> توزيع السور (مكية / مدنية)</h3>
+                <div class="chart-wrap"><canvas id="chartType"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fa-solid fa-users"></i> أكثر الأنبياء ذكرًا في السور</h3>
+                <div class="chart-wrap"><canvas id="chartProphets"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fa-solid fa-palette"></i> أكثر الألوان ذكرًا</h3>
+                <div class="chart-wrap"><canvas id="chartColors"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fa-solid fa-ruler"></i> أطول 10 سور (بعدد الآيات)</h3>
+                <div class="chart-wrap"><canvas id="chartLongest"></canvas></div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

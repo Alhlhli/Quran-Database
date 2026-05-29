@@ -1,0 +1,531 @@
+/* =====================================================================
+   قاعدة بيانات القرآن الكريم — ورقة الأنماط
+   منظمة في أقسام واضحة وتعتمد على متغيرات CSS للألوان
+   ---------------------------------------------------------------------
+   1) متغيرات الألوان (الوضع الفاتح + الليلي)
+   2) إعادة الضبط والأساسيات
+   3) التخطيط العام والترويسة
+   4) شريط الأدوات وعناصر التحكم
+   5) الأزرار
+   6) الجدول والشارات
+   7) بطاقات الإحصائيات
+   8) لوحة الإعدادات (Drawer)
+   9) قائمة تصفية الأعمدة
+   10) النوافذ المنبثقة (Modal)
+   11) الحركات (Animations)
+   12) التجاوب (Responsive)
+   ===================================================================== */
+
+/* =====================================================================
+   1) متغيرات الألوان
+   ===================================================================== */
+:root {
+    --color-primary: #2a5298;
+    --color-primary-dark: #1e3c72;
+    --color-accent: #27ae60;
+    --color-accent-2: #2ecc71;
+    --color-info: #3498db;
+    --color-info-dark: #2980b9;
+    --color-gold: #ffd700;
+
+    --bg-app: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    --bg-surface: #ffffff;
+    --bg-surface-alt: #f8f9fa;
+    --bg-surface-alt2: #e9ecef;
+    --bg-row-even: #f8f9fa;
+    --bg-row-hover: #e3f2fd;
+    --bg-header-table: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    --bg-header-page: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+
+    --text-main: #2c3e50;
+    --text-muted: #666;
+    --text-on-dark: #ffffff;
+
+    --border-soft: #dee2e6;
+    --border-input: #ddd;
+
+    --shadow-sm: 0 6px 20px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 12px 25px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.15);
+
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-pill: 50px;
+
+    --badge-makki-bg: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    --badge-makki-text: #1976d2;
+    --badge-madani-bg: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+    --badge-madani-text: #388e3c;
+
+    --row-makki: rgba(227, 242, 253, 0.3);
+    --row-madani: rgba(232, 245, 232, 0.3);
+
+    --speed: 0.3s;
+    --cell-font: 11px;
+}
+
+/* الوضع الليلي — يكفي تبديل قيم المتغيرات */
+[data-theme="dark"] {
+    --bg-app: linear-gradient(135deg, #0b1622 0%, #14243a 100%);
+    --bg-surface: #1b2735;
+    --bg-surface-alt: #223044;
+    --bg-surface-alt2: #2a3a52;
+    --bg-row-even: #223044;
+    --bg-row-hover: #2f4561;
+    --bg-header-table: linear-gradient(135deg, #25415f 0%, #1d3149 100%);
+    --bg-header-page: linear-gradient(135deg, #16212f 0%, #1d2c3f 100%);
+
+    --text-main: #e6edf3;
+    --text-muted: #9fb0c0;
+
+    --border-soft: #334155;
+    --border-input: #3a4a5e;
+
+    --badge-makki-bg: linear-gradient(135deg, #1e3a5f 0%, #28507e 100%);
+    --badge-makki-text: #8fc3ff;
+    --badge-madani-bg: linear-gradient(135deg, #1f4030 0%, #2a5a40 100%);
+    --badge-madani-text: #87e3a6;
+
+    --row-makki: rgba(40, 80, 126, 0.25);
+    --row-madani: rgba(42, 90, 64, 0.25);
+}
+
+/* تعطيل الحركات عند رغبة المستخدم */
+[data-motion="off"] * {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* كثافة مريحة / مضغوطة */
+[data-density="compact"] {
+    --cell-font: 10px;
+}
+
+/* =====================================================================
+   2) إعادة الضبط والأساسيات
+   ===================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-app);
+    min-height: 100vh;
+    padding: 15px;
+    color: var(--text-main);
+    transition: background var(--speed);
+}
+
+/* =====================================================================
+   3) التخطيط العام والترويسة
+   ===================================================================== */
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    transition: background var(--speed);
+}
+
+.header {
+    background: var(--bg-header-page);
+    color: var(--text-on-dark);
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="m" patternUnits="userSpaceOnUse" width="40" height="40"><circle cx="20" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23m)"/></svg>');
+}
+
+.header-content { position: relative; z-index: 1; }
+
+.header h1 {
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    font-weight: 700;
+}
+
+.header .subtitle { font-size: 1.15rem; opacity: 0.9; margin-bottom: 8px; }
+.header .description { font-size: 0.95rem; opacity: 0.8; }
+
+.header-links { margin-top: 14px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.header-links a {
+    color: var(--text-on-dark);
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 8px 16px;
+    border-radius: var(--radius-pill);
+    font-size: 0.9rem;
+    transition: background var(--speed);
+}
+.header-links a:hover { background: rgba(255, 255, 255, 0.25); }
+
+/* =====================================================================
+   4) شريط الأدوات وعناصر التحكم
+   ===================================================================== */
+.controls {
+    padding: 20px 25px;
+    background: linear-gradient(135deg, var(--bg-surface-alt) 0%, var(--bg-surface-alt2) 100%);
+    border-bottom: 3px solid var(--border-soft);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-wrap { position: relative; flex: 1; min-width: 240px; }
+.search-wrap .search-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+.search-box {
+    width: 100%;
+    padding: 12px 44px 12px 18px;
+    border: 2px solid var(--border-input);
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    transition: all var(--speed);
+    background: var(--bg-surface);
+    color: var(--text-main);
+}
+.search-box:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+    transform: translateY(-1px);
+}
+
+.result-count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* =====================================================================
+   5) الأزرار
+   ===================================================================== */
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all var(--speed);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-on-dark);
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-2) 100%); }
+.btn-primary:hover { box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3); }
+.btn-secondary { background: linear-gradient(135deg, var(--color-info) 0%, #5dade2 100%); }
+.btn-secondary:hover { box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3); }
+.btn-settings { background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%); }
+.btn-settings:hover { box-shadow: 0 8px 20px rgba(155, 89, 182, 0.3); }
+.btn-toggle { background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%); }
+.btn-toggle.active { background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%); }
+
+/* =====================================================================
+   6) الجدول والشارات
+   ===================================================================== */
+.progress-container { padding: 0 25px 16px; background: linear-gradient(135deg, var(--bg-surface-alt) 0%, var(--bg-surface-alt2) 100%); }
+.progress-bar { width: 100%; height: 5px; background: var(--border-soft); border-radius: var(--radius-pill); overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.4s ease; border-radius: var(--radius-pill); }
+
+.table-container { overflow-x: auto; max-height: 70vh; background: var(--bg-surface); }
+
+table { width: 100%; border-collapse: collapse; font-size: var(--cell-font); }
+
+th {
+    background: var(--bg-header-table);
+    color: var(--text-on-dark);
+    padding: 14px 18px 14px 6px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-weight: bold;
+    border: 1px solid var(--color-info-dark);
+    font-size: 10px;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--speed);
+}
+th:hover { filter: brightness(1.08); }
+th .sort-indicator { display: inline-block; margin-right: 3px; font-size: 11px; opacity: 0.85; }
+
+td {
+    padding: 10px 5px;
+    text-align: center;
+    border: 1px solid var(--border-soft);
+    transition: background 0.2s;
+    font-size: var(--cell-font);
+    color: var(--text-main);
+}
+
+tbody tr:nth-child(even) { background-color: var(--bg-row-even); }
+tbody tr:hover { background-color: var(--bg-row-hover) !important; }
+tr.makki td { background: var(--row-makki); }
+tr.madani td { background: var(--row-madani); }
+
+.surah-name { font-weight: bold; font-size: 12px; color: var(--text-main); white-space: nowrap; }
+
+.type-badge { padding: 4px 10px; border-radius: 15px; font-size: 9px; font-weight: 600; white-space: nowrap; }
+.makki-badge { background: var(--badge-makki-bg); color: var(--badge-makki-text); }
+.madani-badge { background: var(--badge-madani-bg); color: var(--badge-madani-text); }
+
+.cell-tag { font-size: 9px; }
+.cell-verse { font-size: 9px; max-width: 420px; text-align: justify; line-height: 1.7; }
+.cell-prophets { background: rgba(255, 243, 205, 0.6); }
+[data-theme="dark"] .cell-prophets { background: rgba(120, 95, 20, 0.35); }
+
+/* زر المفضلة */
+.fav-btn { background: none; border: none; cursor: pointer; font-size: 14px; color: #cfd6dd; transition: transform var(--speed), color var(--speed); }
+.fav-btn:hover { transform: scale(1.25); }
+.fav-btn.active { color: var(--color-gold); }
+
+.loading { text-align: center; padding: 40px; color: var(--text-muted); font-size: 16px; }
+.empty-row td { text-align: center; padding: 30px; color: var(--text-muted); font-size: 14px; }
+
+/* =====================================================================
+   7) بطاقات الإحصائيات
+   ===================================================================== */
+.statistics {
+    padding: 25px;
+    background: linear-gradient(135deg, var(--bg-surface-alt) 0%, var(--bg-surface-alt2) 100%);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 18px;
+}
+.stat-card {
+    background: var(--bg-surface);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--speed);
+    position: relative;
+    overflow: hidden;
+}
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.stat-icon { font-size: 1.4rem; color: var(--color-info); margin-bottom: 6px; }
+.stat-number { font-size: 2rem; font-weight: bold; color: var(--color-info); margin-bottom: 4px; }
+.stat-label { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
+
+/* =====================================================================
+   8) لوحة الإعدادات (Drawer)
+   ===================================================================== */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--speed);
+    z-index: 900;
+}
+.overlay.open { opacity: 1; visibility: visible; }
+
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 380px;
+    max-width: 90vw;
+    height: 100%;
+    background: var(--bg-surface);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.25);
+    transform: translateX(100%);
+    transition: transform var(--speed) ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+.drawer.open { transform: translateX(0); }
+.drawer-header {
+    padding: 20px;
+    background: var(--bg-header-page);
+    color: var(--text-on-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.drawer-header h2 { font-size: 1.2rem; }
+.drawer-close { background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; }
+.drawer-body { padding: 20px; overflow-y: auto; flex: 1; }
+
+.settings-section { margin-bottom: 26px; }
+.settings-section h3 {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--border-soft);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.setting-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; gap: 10px; }
+.setting-row label { font-size: 0.9rem; color: var(--text-main); }
+
+/* مفتاح تبديل */
+.switch { position: relative; width: 46px; height: 24px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: #ccc; border-radius: 24px; transition: var(--speed);
+}
+.slider::before {
+    content: ''; position: absolute; height: 18px; width: 18px;
+    right: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: var(--speed);
+}
+.switch input:checked + .slider { background: var(--color-accent); }
+.switch input:checked + .slider::before { transform: translateX(-22px); }
+
+.select-input, .range-input { width: 150px; }
+.select-input { padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-input); background: var(--bg-surface); color: var(--text-main); }
+
+/* قائمة أعمدة قابلة للتأشير */
+.columns-list { display: flex; flex-direction: column; gap: 4px; max-height: 260px; overflow-y: auto; border: 1px solid var(--border-soft); border-radius: var(--radius-sm); padding: 8px; }
+.column-item { display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; }
+.column-item:hover { background: var(--bg-surface-alt); }
+.column-item input { width: 16px; height: 16px; cursor: pointer; }
+.columns-actions { display: flex; gap: 8px; margin-top: 8px; }
+.btn-mini { flex: 1; padding: 8px; font-size: 0.8rem; border: 1px solid var(--border-soft); background: var(--bg-surface-alt); color: var(--text-main); border-radius: var(--radius-sm); cursor: pointer; transition: background var(--speed); }
+.btn-mini:hover { background: var(--bg-surface-alt2); }
+
+/* =====================================================================
+   9) قائمة تصفية الأعمدة
+   ===================================================================== */
+.filter-icon {
+    cursor: pointer;
+    font-size: 11px;
+    color: var(--text-on-dark);
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 3px;
+    z-index: 20;
+}
+.filter-icon:hover, .filter-icon.filtered { color: var(--color-gold); }
+
+.filter-menu {
+    position: absolute;
+    z-index: 1100;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    max-height: 280px;
+    overflow-y: auto;
+    min-width: 190px;
+    direction: rtl;
+}
+.filter-menu ul { list-style: none; }
+.filter-menu li {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 11px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 1.4;
+    color: var(--text-main);
+}
+.filter-menu li:hover { background: var(--bg-surface-alt); }
+.filter-menu li.active { background: var(--bg-row-hover); font-weight: bold; }
+.filter-menu li span { color: var(--text-muted); font-size: 10px; }
+
+/* =====================================================================
+   10) النوافذ المنبثقة (Modal) — تفاصيل السورة
+   ===================================================================== */
+.modal-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 640px;
+    max-width: 92vw;
+    max-height: 86vh;
+    overflow-y: auto;
+    background: var(--bg-surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--speed), transform var(--speed);
+}
+.modal-card.open { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+.modal-head { padding: 18px 22px; background: var(--bg-header-table); color: var(--text-on-dark); display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius-md) var(--radius-md) 0 0; }
+.modal-head h2 { font-size: 1.3rem; }
+.modal-body { padding: 22px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.detail-item { background: var(--bg-surface-alt); border-radius: var(--radius-sm); padding: 10px 12px; }
+.detail-item .k { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 3px; }
+.detail-item .v { font-size: 0.9rem; color: var(--text-main); }
+.detail-item.full { grid-column: 1 / -1; }
+.detail-verse { line-height: 1.9; font-size: 1rem; text-align: justify; }
+
+/* =====================================================================
+   11) الحركات
+   ===================================================================== */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeInUp 0.35s ease both; }
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-main);
+    color: var(--bg-surface);
+    padding: 12px 22px;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    transition: all var(--speed);
+    z-index: 1200;
+    font-size: 0.9rem;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* =====================================================================
+   12) التجاوب
+   ===================================================================== */
+@media (max-width: 768px) {
+    .controls { flex-direction: column; align-items: stretch; }
+    .search-wrap { min-width: unset; }
+    th, td { padding: 6px 3px; font-size: 9px; }
+    .header h1 { font-size: 1.7rem; }
+    .btn { width: 100%; justify-content: center; }
+    .detail-grid { grid-template-columns: 1fr; }
+}
