@@ -1,5 +1,6 @@
 /* =====================================================================
    صفحة الإحصائيات — حساب البيانات ورسمها باستخدام Chart.js
+   تغطّي معظم الأعمدة برسوم بيانية متنوعة
    ===================================================================== */
 'use strict';
 
@@ -12,49 +13,83 @@
 })();
 
 const PLACEHOLDER = 'ـــ';
+const PALETTE = ['#3498db', '#27ae60', '#e67e22', '#9b59b6', '#e74c3c', '#1abc9c',
+                 '#f1c40f', '#34495e', '#16a085', '#d35400', '#2980b9', '#8e44ad'];
 
-/* تقسيم خانة نصية متعددة القيم مفصولة بفواصل عربية إلى مفردات */
+/* ---------- أدوات حساب ---------- */
 function splitItems(text) {
     if (!text || text === PLACEHOLDER) return [];
     return text.split(/[،,]/).map(t => t.trim()).filter(t => t && t !== PLACEHOLDER);
 }
 
-/* عدّ تكرارات القيم عبر كل السور وإرجاع الأكثر شيوعًا */
-function topCounts(surahs, key, limit) {
+// تكرار القيم في عمود نصّي متعدد القيم (الأنبياء، الألوان...)
+function topMulti(surahs, key, limit) {
     const counts = {};
-    surahs.forEach(s => splitItems(s[key]).forEach(item => {
-        counts[item] = (counts[item] || 0) + 1;
-    }));
+    surahs.forEach(s => splitItems(s[key]).forEach(it => counts[it] = (counts[it] || 0) + 1));
     return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, limit);
+}
+
+// توزيع القيم المفردة في عمود نصّي (الحروف المقطعة، أكثر نهاية...)
+function distribution(surahs, key, limit) {
+    const counts = {};
+    surahs.forEach(s => {
+        let v = s[key];
+        if (v === undefined || v === null || v === '' || v === PLACEHOLDER || v === 'لا') return;
+        counts[v] = (counts[v] || 0) + 1;
+    });
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, limit);
+}
+
+// أعلى السور وفق عمود رقمي
+function topNumeric(surahs, key, limit) {
+    return [...surahs]
+        .filter(s => typeof s[key] === 'number')
+        .sort((a, b) => b[key] - a[key])
+        .slice(0, limit)
+        .map(s => [s.name, s[key]]);
 }
 
 function cssVar(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-function buildSummary(surahs, meta) {
-    const totalVerses = surahs.reduce((a, s) => a + (s.verses || 0), 0);
-    const totalWords = surahs.reduce((a, s) => a + (typeof s.words === 'number' ? s.words : 0), 0);
-    const totalSajdahs = surahs.reduce((a, s) => a + (s.sajdahs || 0), 0);
+/* ---------- بناء البطاقات ---------- */
+function buildSummary(surahs) {
+    const sum = k => surahs.reduce((a, s) => a + (typeof s[k] === 'number' ? s[k] : 0), 0);
     const cards = [
         ['fa-book-quran', surahs.length, 'إجمالي السور'],
-        ['fa-kaaba', meta.makkiSurahs ?? surahs.filter(s => s.type === 'مكية').length, 'المكية'],
-        ['fa-moon', meta.madaniSurahs ?? surahs.filter(s => s.type === 'مدنية').length, 'المدنية'],
-        ['fa-list-ol', totalVerses.toLocaleString('en-US'), 'الآيات'],
-        ['fa-font', totalWords.toLocaleString('en-US'), 'الكلمات'],
-        ['fa-person-praying', totalSajdahs, 'السجدات'],
+        ['fa-kaaba', surahs.filter(s => s.type === 'مكية').length, 'المكية'],
+        ['fa-moon', surahs.filter(s => s.type === 'مدنية').length, 'المدنية'],
+        ['fa-list-ol', sum('verses').toLocaleString('en-US'), 'الآيات'],
+        ['fa-font', sum('words').toLocaleString('en-US'), 'الكلمات'],
+        ['fa-mosque', sum('allah').toLocaleString('en-US'), 'ذكر «الله»'],
+        ['fa-person-praying', sum('sajdahs'), 'السجدات'],
     ];
-    document.getElementById('summaryCards').innerHTML = cards.map(([icon, num, label]) =>
-        `<div class="stat-card"><div class="stat-icon"><i class="fa-solid ${icon}"></i></div>
-         <div class="stat-number">${num}</div><div class="stat-label">${label}</div></div>`
-    ).join('');
+    document.getElementById('summaryCards').innerHTML = cards.map(([i, n, l]) =>
+        `<div class="stat-card"><div class="stat-icon"><i class="fa-solid ${i}"></i></div>
+         <div class="stat-number">${n}</div><div class="stat-label">${l}</div></div>`).join('');
 }
 
-function makeChart(id, type, labels, data, label, colors) {
-    const textColor = cssVar('--text-main') || '#2c3e50';
+/* إنشاء بطاقة رسم بياني وإرجاع عنصر canvas جاهز */
+function addChartCard(title, icon) {
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    const h = document.createElement('h3');
+    h.innerHTML = `<i class="fa-solid ${icon}"></i> ${title}`;
+    const wrap = document.createElement('div');
+    wrap.className = 'chart-wrap';
+    const canvas = document.createElement('canvas');
+    wrap.appendChild(canvas);
+    card.appendChild(h);
+    card.appendChild(wrap);
+    document.getElementById('chartsGrid').appendChild(card);
+    return canvas;
+}
+
+function drawChart(canvas, type, labels, data, label, colors) {
     Chart.defaults.font.family = "'Segoe UI', Tahoma, sans-serif";
-    Chart.defaults.color = textColor;
-    new Chart(document.getElementById(id), {
+    Chart.defaults.color = cssVar('--text-main') || '#2c3e50';
+    new Chart(canvas, {
         type,
         data: {
             labels,
@@ -70,43 +105,58 @@ function makeChart(id, type, labels, data, label, colors) {
             responsive: true,
             maintainAspectRatio: false,
             indexAxis: type === 'bar' ? 'y' : 'x',
-            plugins: {
-                legend: { display: type === 'doughnut', position: 'bottom' },
-            },
-            scales: type === 'bar' ? { x: { beginAtZero: true } } : {},
+            plugins: { legend: { display: type === 'doughnut', position: 'bottom' } },
+            scales: type === 'bar' ? { x: { beginAtZero: true, ticks: { precision: 0 } } } : {},
         },
     });
 }
 
+// اختصارات
+function bar(title, icon, entries, label) {
+    drawChart(addChartCard(title, icon), 'bar', entries.map(e => e[0]), entries.map(e => e[1]), label, PALETTE);
+}
+function doughnut(title, icon, entries, colors) {
+    drawChart(addChartCard(title, icon), 'doughnut', entries.map(e => e[0]), entries.map(e => e[1]), '', colors || PALETTE);
+}
+
+/* ---------- التشغيل ---------- */
 async function init() {
-    const palette = ['#3498db', '#27ae60', '#e67e22', '#9b59b6', '#e74c3c', '#1abc9c', '#f1c40f', '#34495e', '#16a085', '#d35400'];
     try {
         const res = await fetch('quran-data.json');
         const data = await res.json();
-        const surahs = Array.isArray(data.surahs)
-            ? data.surahs
-            : data.data.map(row => {
-                const o = {};
-                data.columns.forEach((c, i) => { o[c] = row[i]; });
-                return o;
-            });
+        const surahs = Array.isArray(data.surahs) ? data.surahs
+            : data.data.map(r => Object.fromEntries(data.columns.map((c, i) => [c, r[i]])));
 
-        buildSummary(surahs, data.meta || {});
+        buildSummary(surahs);
 
+        // 1) توزيع مكي/مدني
         const makki = surahs.filter(s => s.type === 'مكية').length;
-        const madani = surahs.length - makki;
-        makeChart('chartType', 'doughnut', ['مكية', 'مدنية'], [makki, madani], 'السور', ['#3498db', '#27ae60']);
+        doughnut('توزيع السور (مكية / مدنية)', 'fa-kaaba',
+            [['مكية', makki], ['مدنية', surahs.length - makki]], ['#3498db', '#27ae60']);
 
-        const prophets = topCounts(surahs, 'prophets', 10);
-        makeChart('chartProphets', 'bar', prophets.map(p => p[0]), prophets.map(p => p[1]), 'عدد السور', palette);
+        // 2) توزيع السجدات
+        const saj = {};
+        surahs.forEach(s => { const k = (s.sajdahs || 0) + ' سجدة'; saj[k] = (saj[k] || 0) + 1; });
+        doughnut('توزيع السجدات على السور', 'fa-person-praying', Object.entries(saj));
 
-        const colors = topCounts(surahs, 'colors', 8);
-        makeChart('chartColors', 'bar', colors.map(c => c[0]), colors.map(c => c[1]), 'عدد السور', palette);
+        // 3-6) أعمدة رقمية: أعلى 10 سور
+        bar('أطول 10 سور (بعدد الآيات)', 'fa-list-ol', topNumeric(surahs, 'verses', 10), 'آية');
+        bar('أكثر 10 سور (بعدد الكلمات)', 'fa-font', topNumeric(surahs, 'words', 10), 'كلمة');
+        bar('أكثر 10 سور (بعدد الحروف)', 'fa-spell-check', topNumeric(surahs, 'letters', 10), 'حرف');
+        bar('أكثر 10 سور ذكرًا للفظ «الله»', 'fa-mosque', topNumeric(surahs, 'allah', 10), 'مرة');
 
-        const longest = [...surahs].sort((a, b) => b.verses - a.verses).slice(0, 10);
-        makeChart('chartLongest', 'bar', longest.map(s => s.name), longest.map(s => s.verses), 'عدد الآيات', palette);
+        // 7-11) أعمدة نصّية متعددة القيم
+        bar('أكثر الأنبياء ذكرًا', 'fa-users', topMulti(surahs, 'prophets', 10), 'عدد السور');
+        bar('أكثر الأسماء الحسنى ذكرًا', 'fa-star-and-crescent', topMulti(surahs, 'allahNames', 10), 'عدد السور');
+        bar('أكثر الألوان ذكرًا', 'fa-palette', topMulti(surahs, 'colors', 8), 'عدد السور');
+        bar('أكثر الحيوانات ذكرًا', 'fa-dove', topMulti(surahs, 'animals', 10), 'عدد السور');
+        bar('أكثر الأرقام ذكرًا', 'fa-calculator', topMulti(surahs, 'numbers', 10), 'عدد السور');
+
+        // 12-13) توزيع قيم مفردة
+        bar('أكثر الحروف المقطعة (فواتح السور)', 'fa-puzzle-piece', distribution(surahs, 'disconnectedLetters', 12), 'عدد السور');
+        bar('أكثر حروف نهايات الآيات شيوعًا', 'fa-flag-checkered', distribution(surahs, 'mostCommonEndLetter', 10), 'عدد السور');
     } catch (err) {
-        document.querySelector('.charts-grid').innerHTML =
+        document.getElementById('chartsGrid').innerHTML =
             `<p style="padding:20px;color:var(--text-muted)">⚠️ تعذّر تحميل البيانات. افتح الصفحة عبر خادم محلي.</p>`;
     }
 }

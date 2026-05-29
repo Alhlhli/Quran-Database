@@ -1,8 +1,9 @@
 /* Service Worker — يتيح عمل التطبيق دون اتصال (PWA) */
-const CACHE = 'quran-db-v1';
+const CACHE = 'quran-db-v2';
 const ASSETS = [
     'index.html',
     'stats.html',
+    'faq.html',
     'style.css',
     'app.js',
     'stats.js',

@@ -256,6 +256,7 @@ body {
 
 table { width: 100%; border-collapse: collapse; font-size: var(--cell-font); }
 
+/* أحجام الخط داخل الجدول نسبية (em) حتى يتحكم بها إعداد "حجم الخط" بالكامل */
 th {
     background: var(--bg-header-table);
     color: var(--text-on-dark);
@@ -266,39 +267,59 @@ th {
     z-index: 10;
     font-weight: bold;
     border: 1px solid var(--color-info-dark);
-    font-size: 10px;
+    font-size: 0.95em;
     white-space: nowrap;
     cursor: pointer;
     user-select: none;
     transition: background var(--speed);
 }
 th:hover { filter: brightness(1.08); }
-th .sort-indicator { display: inline-block; margin-right: 3px; font-size: 11px; opacity: 0.85; }
+th .sort-indicator { display: inline-block; margin-right: 3px; font-size: 1em; opacity: 0.85; }
 
 td {
     padding: 10px 5px;
     text-align: center;
     border: 1px solid var(--border-soft);
     transition: background 0.2s;
-    font-size: var(--cell-font);
+    font-size: 1em;
     color: var(--text-main);
 }
+
+/* الكثافة المضغوطة تقلّل التباعد لا الخط */
+[data-density="compact"] td { padding: 5px 3px; }
+[data-density="compact"] th { padding: 9px 16px 9px 4px; }
 
 tbody tr:nth-child(even) { background-color: var(--bg-row-even); }
 tbody tr:hover { background-color: var(--bg-row-hover) !important; }
 tr.makki td { background: var(--row-makki); }
 tr.madani td { background: var(--row-madani); }
 
-.surah-name { font-weight: bold; font-size: 12px; color: var(--text-main); white-space: nowrap; }
+td.surah-name { font-weight: bold; font-size: 1.12em; color: var(--text-main); white-space: nowrap; }
 
-.type-badge { padding: 4px 10px; border-radius: 15px; font-size: 9px; font-weight: 600; white-space: nowrap; }
+.type-badge { padding: 4px 10px; border-radius: 15px; font-size: 0.82em; font-weight: 600; white-space: nowrap; }
 .makki-badge { background: var(--badge-makki-bg); color: var(--badge-makki-text); }
 .madani-badge { background: var(--badge-madani-bg); color: var(--badge-madani-text); }
 
-.cell-tag { font-size: 9px; }
-.cell-verse { font-size: 9px; max-width: 420px; text-align: justify; line-height: 1.7; }
+.cell-tag { font-size: 0.85em; }
+.cell-verse { font-size: 0.85em; max-width: 420px; text-align: justify; line-height: 1.7; }
 .cell-prophets { background: rgba(255, 243, 205, 0.6); }
 [data-theme="dark"] .cell-prophets { background: rgba(120, 95, 20, 0.35); }
+
+/* ---------- تثبيت الأعمدة الأولى عند التمرير الأفقي (RTL) ---------- */
+th.col-seq,  td.col-seq  { position: sticky; right: 0;    width: 40px; }
+th.col-fav,  td.col-fav  { position: sticky; right: 40px; width: 34px; }
+th.col-name, td.col-name { position: sticky; right: 74px; }
+td.col-seq, td.col-fav, td.col-name { z-index: 6; }
+/* رؤوس الأعمدة المثبّتة تبقى في الزاوية فوق الجميع */
+thead th.col-seq, thead th.col-fav, thead th.col-name { z-index: 30; }
+/* خلفية صلبة للخلايا المثبّتة حتى لا يظهر المحتوى خلفها */
+tbody td.col-seq, tbody td.col-fav, tbody td.col-name { background: var(--bg-surface); }
+tbody tr:nth-child(even) td.col-seq,
+tbody tr:nth-child(even) td.col-fav,
+tbody tr:nth-child(even) td.col-name { background: var(--bg-row-even); }
+tbody tr:hover td.col-seq,
+tbody tr:hover td.col-fav,
+tbody tr:hover td.col-name { background: var(--bg-row-hover); }
 
 /* زر المفضلة */
 .fav-btn { background: none; border: none; cursor: pointer; font-size: 14px; color: #cfd6dd; transition: transform var(--speed), color var(--speed); }
@@ -518,13 +539,46 @@ tr.madani td { background: var(--row-madani); }
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* صفحة البداية التعليمية (Onboarding) */
+.onboarding {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1500;
+    padding: 16px;
+}
+.onboarding.open { display: flex; }
+.onboarding-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    padding: 36px 28px 26px;
+    width: 460px;
+    max-width: 94vw;
+    text-align: center;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    animation: fadeInUp 0.35s ease both;
+}
+.onboarding-skip { position: absolute; top: 10px; left: 16px; color: var(--text-muted); }
+.onboarding-icon { font-size: 2.8rem; color: var(--color-info); margin-bottom: 14px; }
+.onboarding-card h2 { color: var(--text-main); margin-bottom: 12px; }
+.onboarding-card p { color: var(--text-muted); line-height: 1.9; min-height: 78px; }
+.onboarding-dots { display: flex; gap: 8px; justify-content: center; margin: 18px 0; }
+.onboarding-dots span { width: 9px; height: 9px; border-radius: 50%; background: var(--border-soft); transition: background var(--speed); }
+.onboarding-dots span.active { background: var(--color-info); transform: scale(1.15); }
+.onboarding-actions { display: flex; gap: 10px; justify-content: center; }
+.onboarding-actions .btn-mini { flex: 0 0 auto; padding: 9px 22px; }
+
 /* =====================================================================
    12) التجاوب
    ===================================================================== */
 @media (max-width: 768px) {
     .controls { flex-direction: column; align-items: stretch; }
     .search-wrap { min-width: unset; }
-    th, td { padding: 6px 3px; font-size: 9px; }
+    th, td { padding: 6px 3px; }
     .header h1 { font-size: 1.7rem; }
     .btn { width: 100%; justify-content: center; }
     .detail-grid { grid-template-columns: 1fr; }

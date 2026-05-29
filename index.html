@@ -25,7 +25,9 @@
                 <p class="subtitle">رواية حفص عن عاصم — جميع السور الـ114 مع البيانات الكاملة</p>
                 <p class="description">بيانات وإحصائيات مفصّلة لكل سورة مع الأنبياء والأسماء الحسنى المذكورة</p>
                 <nav class="header-links">
-                    <a href="stats.html" target="_blank" rel="noopener"><i class="fa-solid fa-chart-pie"></i> صفحة الإحصائيات</a>
+                    <a href="stats.html"><i class="fa-solid fa-chart-pie"></i> صفحة الإحصائيات</a>
+                    <a href="faq.html"><i class="fa-solid fa-circle-question"></i> أسئلة ومعلومات</a>
+                    <a href="#" id="btnTutorial"><i class="fa-solid fa-graduation-cap"></i> جولة تعليمية</a>
                     <a href="https://github.com/Alhlhli/Quran-Database" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> المستودع على GitHub</a>
                 </nav>
             </div>
@@ -39,6 +41,7 @@
                        placeholder="ابحث في أسماء السور أو الأنبياء أو الأسماء الحسنى...">
             </div>
             <span class="result-count" id="resultCount"></span>
+            <button class="btn btn-toggle" id="btnTheme" title="تبديل الوضع الفاتح/الغامق"><i class="fa-solid fa-moon"></i> <span id="themeLabel">غامق</span></button>
             <button class="btn btn-primary" id="btnExportExcel"><i class="fa-solid fa-file-excel"></i> Excel</button>
             <button class="btn btn-secondary" id="btnExportCSV"><i class="fa-solid fa-file-csv"></i> CSV</button>
             <button class="btn btn-settings" id="btnSettings"><i class="fa-solid fa-gear"></i> الإعدادات</button>
@@ -142,6 +145,21 @@
             <button class="drawer-close" id="detailClose">&times;</button>
         </div>
         <div class="modal-body"><div class="detail-grid" id="detailBody"></div></div>
+    </div>
+
+    <!-- صفحة البداية التعليمية (Onboarding) -->
+    <div class="onboarding" id="onboarding">
+        <div class="onboarding-card">
+            <button class="drawer-close onboarding-skip" id="tutorialSkip">&times;</button>
+            <div class="onboarding-icon"><i class="fa-solid fa-book-quran"></i></div>
+            <h2 id="tutTitle">مرحبًا بك 👋</h2>
+            <p id="tutBody">تعرّف بسرعة على كيفية استخدام قاعدة بيانات القرآن الكريم.</p>
+            <div class="onboarding-dots" id="tutDots"></div>
+            <div class="onboarding-actions">
+                <button class="btn-mini" id="tutPrev">السابق</button>
+                <button class="btn btn-primary" id="tutNext">التالي</button>
+            </div>
+        </div>
     </div>
 
 </body>

@@ -150,7 +150,29 @@ function applySettingsToDom() {
     root.setAttribute('data-theme', state.settings.theme);
     root.setAttribute('data-motion', state.settings.motion ? 'on' : 'off');
     root.setAttribute('data-density', state.settings.density);
+    // حجم الخط يُطبَّق على الجدول كله لأن أحجام الخلايا نسبية (em)
     root.style.setProperty('--cell-font', state.settings.fontSize + 'px');
+    syncThemeControls();
+}
+
+/* مزامنة زر الثيم والمفتاح في الإعدادات مع الحالة الحالية */
+function syncThemeControls() {
+    const dark = state.settings.theme === 'dark';
+    const icon = document.querySelector('#btnTheme i');
+    const label = document.getElementById('themeLabel');
+    if (icon) icon.className = dark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    if (label) label.textContent = dark ? 'فاتح' : 'غامق';
+    const btn = document.getElementById('btnTheme');
+    if (btn) btn.classList.toggle('active', dark);
+    const cb = document.getElementById('setTheme');
+    if (cb) cb.checked = dark;
+}
+
+/* تبديل الوضع الفاتح/الغامق */
+function setTheme(theme) {
+    state.settings.theme = theme;
+    applySettingsToDom();
+    saveSettings();
 }
 
 /* ---------------------------------------------------------------------
@@ -197,13 +219,15 @@ function renderHeader() {
     tr.innerHTML = '';
 
     // عمود التسلسل
-    tr.appendChild(makeStaticTh('م', '40px'));
+    tr.appendChild(makeStaticTh('م', '40px', 'col-seq'));
     // عمود المفضلة
-    tr.appendChild(makeStaticTh('★', '34px'));
+    tr.appendChild(makeStaticTh('★', '34px', 'col-fav'));
 
     visibleColumns().forEach(col => {
         const th = document.createElement('th');
-        th.style.position = 'relative';
+        // ملاحظة: لا نضبط position:relative حتى لا نُلغِ تثبيت الرأس (sticky top)؛
+        // فالعنصر sticky يصلح أصلًا كمرجع لأيقونة التصفية المطلقة.
+        if (col.key === 'name') th.classList.add('col-name');
 
         const textSpan = document.createElement('span');
         textSpan.className = 'header-text';
@@ -226,11 +250,12 @@ function renderHeader() {
     });
 }
 
-function makeStaticTh(label, width) {
+function makeStaticTh(label, width, className) {
     const th = document.createElement('th');
     th.textContent = label;
     th.style.width = width;
     th.style.cursor = 'default';
+    if (className) th.className = className;
     return th;
 }
 
@@ -265,11 +290,13 @@ function createRow(surah, index) {
 
     // التسلسل
     const seq = document.createElement('td');
+    seq.className = 'col-seq';
     seq.innerHTML = `<strong>${index + 1}</strong>`;
     tr.appendChild(seq);
 
     // المفضلة
     const favTd = document.createElement('td');
+    favTd.className = 'col-fav';
     const favBtn = document.createElement('button');
     favBtn.className = 'fav-btn' + (state.favorites.has(surah.id) ? ' active' : '');
     favBtn.innerHTML = '<i class="fa-solid fa-star"></i>';
@@ -281,7 +308,7 @@ function createRow(surah, index) {
     visibleColumns().forEach(col => {
         const cell = createCell(surah, col);
         if (col.key === 'name') {
-            cell.classList.add('surah-name');
+            cell.classList.add('surah-name', 'col-name');
             cell.style.cursor = 'pointer';
             cell.title = 'عرض التفاصيل الكاملة';
             cell.addEventListener('click', () => openDetail(surah));
@@ -526,8 +553,7 @@ function buildSettingsPanel() {
 
 function bindSettingsControls() {
     document.getElementById('setTheme').addEventListener('change', e => {
-        state.settings.theme = e.target.checked ? 'dark' : 'light';
-        applySettingsToDom(); saveSettings();
+        setTheme(e.target.checked ? 'dark' : 'light');
     });
     document.getElementById('setMotion').addEventListener('change', e => {
         state.settings.motion = e.target.checked; applySettingsToDom(); saveSettings();
@@ -611,10 +637,51 @@ function exportToCSV() {
 }
 
 /* ---------------------------------------------------------------------
-   15) ربط الأحداث والتشغيل
+   15) صفحة البداية التعليمية (Onboarding)
+   --------------------------------------------------------------------- */
+const TUTORIAL_KEY = 'quranTutorialSeen';
+const TUTORIAL_STEPS = [
+    { icon: 'fa-book-quran', title: 'مرحبًا بك 👋', body: 'هذه قاعدة بيانات تفاعلية لجميع سور القرآن الكريم الـ114، مع 27 حقلًا من المعلومات لكل سورة.' },
+    { icon: 'fa-magnifying-glass', title: 'ابحث بسهولة', body: 'اكتب في صندوق البحث للوصول إلى سورة باسمها أو رقمها، أو ابحث عن نبيٍّ أو اسمٍ من أسماء الله الحسنى.' },
+    { icon: 'fa-sort', title: 'رتّب وصفِّ', body: 'انقر على عنوان أي عمود لترتيبه تصاعديًا/تنازليًا، واضغط أيقونة ▼ بجانب العنوان لتصفية القيم.' },
+    { icon: 'fa-gear', title: 'خصّص كل شيء', body: 'من زر الإعدادات: غيّر الوضع الليلي، حجم الخط، الأعمدة الظاهرة، والمزيد. وزر القمر/الشمس يبدّل الثيم بسرعة.' },
+    { icon: 'fa-star', title: 'المفضلة والإحصائيات', body: 'أضف السور إلى المفضلة بالنجمة ⭐، وتفقّد صفحة الإحصائيات للرسوم البيانية. استمتع! 🌙' },
+];
+let tutStep = 0;
+
+function renderTutorial() {
+    const s = TUTORIAL_STEPS[tutStep];
+    document.querySelector('#onboarding .onboarding-icon').innerHTML = `<i class="fa-solid ${s.icon}"></i>`;
+    document.getElementById('tutTitle').textContent = s.title;
+    document.getElementById('tutBody').textContent = s.body;
+    const dots = document.getElementById('tutDots');
+    dots.innerHTML = TUTORIAL_STEPS.map((_, i) => `<span class="${i === tutStep ? 'active' : ''}"></span>`).join('');
+    document.getElementById('tutPrev').style.visibility = tutStep === 0 ? 'hidden' : 'visible';
+    document.getElementById('tutNext').textContent = tutStep === TUTORIAL_STEPS.length - 1 ? 'ابدأ الآن' : 'التالي';
+}
+
+function openTutorial() { tutStep = 0; renderTutorial(); document.getElementById('onboarding').classList.add('open'); }
+function closeTutorial() {
+    document.getElementById('onboarding').classList.remove('open');
+    localStorage.setItem(TUTORIAL_KEY, '1');
+}
+
+function bindTutorial() {
+    document.getElementById('btnTutorial').addEventListener('click', e => { e.preventDefault(); openTutorial(); });
+    document.getElementById('tutorialSkip').addEventListener('click', closeTutorial);
+    document.getElementById('tutPrev').addEventListener('click', () => { if (tutStep > 0) { tutStep--; renderTutorial(); } });
+    document.getElementById('tutNext').addEventListener('click', () => {
+        if (tutStep < TUTORIAL_STEPS.length - 1) { tutStep++; renderTutorial(); }
+        else closeTutorial();
+    });
+}
+
+/* ---------------------------------------------------------------------
+   16) ربط الأحداث والتشغيل
    --------------------------------------------------------------------- */
 function bindGlobalEvents() {
     document.getElementById('searchBox').addEventListener('input', applyAll);
+    document.getElementById('btnTheme').addEventListener('click', () => setTheme(state.settings.theme === 'dark' ? 'light' : 'dark'));
     document.getElementById('btnExportExcel').addEventListener('click', exportToExcel);
     document.getElementById('btnExportCSV').addEventListener('click', exportToCSV);
     document.getElementById('btnSettings').addEventListener('click', openSettings);
@@ -622,9 +689,10 @@ function bindGlobalEvents() {
     document.getElementById('detailClose').addEventListener('click', closeDetail);
     document.getElementById('overlay').addEventListener('click', () => { closeSettings(); closeDetail(); });
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { closeSettings(); closeDetail(); closeFilterMenu(); }
+        if (e.key === 'Escape') { closeSettings(); closeDetail(); closeFilterMenu(); closeTutorial(); }
     });
     bindSettingsControls();
+    bindTutorial();
 }
 
 async function init() {
@@ -641,7 +709,11 @@ async function init() {
         state.surahs = normalizeData(data);
         state.meta = data.meta || {};
         renderHeader();
-        runProgress(() => applyAll());
+        runProgress(() => {
+            applyAll();
+            // عرض الجولة التعليمية في أول زيارة فقط
+            if (!localStorage.getItem(TUTORIAL_KEY)) openTutorial();
+        });
     } catch (err) {
         document.getElementById('tableBody').innerHTML =
             `<tr class="empty-row"><td colspan="30">⚠️ ${err.message}<br><small>افتح الصفحة عبر خادم محلي (Live Server) لتفعيل تحميل JSON.</small></td></tr>`;
