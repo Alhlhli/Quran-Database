@@ -1,5 +1,5 @@
 /* =====================================================================
-   مسابقة قاعدة بيانات القرآن الكريم — محرّك توليد الأسئلة
+   مسابقة قاعدة بيانات القرآن الكريم — محرّك توليد الأسئلة المطور
    جميع الأسئلة تُولَّد ديناميكيًا من quran-data.json + قوالب quiz/questions.json
    ===================================================================== */
 'use strict';
@@ -100,7 +100,6 @@ const GEN = {
     },
 
     whichByField(t) {
-        // قيمة فريدة لضمان إجابة واحدة
         const counts = {};
         Q.surahs.forEach(s => { const v = s[t.field]; if (typeof v === 'number') counts[v] = (counts[v] || 0) + 1; });
         const uniquePool = Q.surahs.filter(s => typeof s[t.field] === 'number' && counts[s[t.field]] === 1);
@@ -134,7 +133,6 @@ const GEN = {
     },
 
     prophetWhere(t) {
-        // اختر نبيًّا ذُكِر في عددٍ محدود من السور لتكون المموّهات سهلة
         const candidates = ALL_PROPHETS.filter(p => PROPHET_SURahs[p].length >= 1 && PROPHET_SURahs[p].length <= Q.surahs.length - 4);
         const p = pick(candidates.length ? candidates : ALL_PROPHETS);
         const inSet = new Set(PROPHET_SURahs[p].map(s => s.name));
@@ -178,6 +176,58 @@ const GEN = {
             explanation: `${correct[0]} ذُكِر في ${correct[1]} سورة — الأكثر بين الأنبياء.`,
         };
     },
+
+    /* ---------- المولدات الجديدة والمطورة ---------- */
+    nextInMushaf(t) {
+        const pool = Q.surahs.filter(x => x.number < 114);
+        if (!pool.length) return null;
+        const s = pick(pool);
+        const nextSurah = Q.surahs.find(x => x.number === s.number + 1);
+        if (!nextSurah) return null;
+        const distract = sampleN(Q.surahs.filter(x => x.name !== s.name && x.name !== nextSurah.name), 3);
+        if (distract.length < 3) return null;
+        const opts = shuffle([nextSurah.name, ...distract.map(x => x.name)]);
+        return {
+            text: t.prompt.replace('{name}', s.name),
+            options: opts,
+            answer: nextSurah.name,
+            explanation: `السورة التالية لسورة ${s.name} في ترتيب المصحف الشريف هي سورة ${nextSurah.name}.`,
+        };
+    },
+
+    nextInRevelation(t) {
+        const pool = Q.surahs.filter(x => x.revelationOrder < 114);
+        if (!pool.length) return null;
+        const s = pick(pool);
+        const nextSurah = Q.surahs.find(x => x.revelationOrder === s.revelationOrder + 1);
+        if (!nextSurah) return null;
+        const distract = sampleN(Q.surahs.filter(x => x.name !== s.name && x.name !== nextSurah.name), 3);
+        if (distract.length < 3) return null;
+        const opts = shuffle([nextSurah.name, ...distract.map(x => x.name)]);
+        return {
+            text: t.prompt.replace('{name}', s.name),
+            options: opts,
+            answer: nextSurah.name,
+            explanation: `السورة التالية لسورة ${s.name} في ترتيب النزول هي سورة ${nextSurah.name} (ترتيب نزولها: ${nextSurah.revelationOrder}).`,
+        };
+    },
+
+    textField(t) {
+        const pool = Q.surahs.filter(s => s[t.field] && s[t.field] !== PLACEHOLDER && s[t.field] !== 'لا' && s[t.field] !== 'ـــ' && s[t.field] !== '___');
+        if (!pool.length) return null;
+        const s = pick(pool);
+        const correct = s[t.field];
+        const others = [...new Set(pool.map(x => x[t.field]).filter(v => v !== correct && v !== PLACEHOLDER && v !== 'لا' && v !== 'ـــ' && v !== '___'))];
+        const distract = sampleN(others, 3);
+        if (distract.length < 3) return null;
+        const opts = shuffle([correct, ...distract]);
+        return {
+            text: t.prompt.replace('{name}', s.name),
+            options: opts,
+            answer: correct,
+            explanation: `في سورة ${s.name}، الإجابة الصحيحة هي: ${correct}.`,
+        };
+    }
 };
 
 /* ---------- بناء جولة المسابقة ---------- */
@@ -194,7 +244,7 @@ function buildQuiz(level, count) {
         const q = gen(t);
         if (!q || !q.options || q.options.length < 2) continue;
         const key = q.text + '|' + q.answer;
-        if (seen.has(key)) continue;          // تجنّب التكرار الحرفي
+        if (seen.has(key)) continue;
         seen.add(key);
         out.push(q);
     }
@@ -207,9 +257,6 @@ const $ = id => document.getElementById(id);
 function startQuiz() {
     const count = +$('amountSelect').value;
     Q.quiz = buildQuiz(Q.level, count);
-    if (Q.quiz.length < count) {
-        // في حال تعذّر بلوغ العدد المطلوب نكتفي بالمتاح
-    }
     Q.index = 0; Q.score = 0; Q.correct = 0; Q.answered = false;
     $('startScreen').style.display = 'none';
     $('resultScreen').style.display = 'none';
@@ -229,7 +276,7 @@ function renderQuestion() {
     $('qFeedback').textContent = '';
     $('nextBtn').style.display = 'none';
 
-    const box = $('qOptions');
+    const box = PlayOptions = $('qOptions');
     box.innerHTML = '';
     q.options.forEach(opt => {
         const b = document.createElement('button');
@@ -253,7 +300,7 @@ function answer(btn, opt, q) {
     if (opt === q.answer) {
         Q.score += pts; Q.correct++;
         fb.className = 'q-feedback ok';
-        fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> إجابة صحيحة! +${pts} نقطة — ${q.explanation}`;
+        fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> إجابة صحيحة! +${pts} نقطة — ${fb.innerHTML = q.explanation}`;
     } else {
         btn.classList.add('wrong');
         fb.className = 'q-feedback bad';
@@ -277,7 +324,6 @@ function showResult() {
     const pct = total ? Math.round(Q.correct / total * 100) : 0;
     const maxScore = total * Q.config.points[Q.level];
 
-    // حفظ أفضل نتيجة لكل مستوى
     let best = {};
     try { best = JSON.parse(localStorage.getItem(BEST_KEY) || '{}'); } catch (e) {}
     const prevBest = best[Q.level] || 0;
@@ -300,7 +346,6 @@ function backToStart() {
     $('startScreen').style.display = 'block';
 }
 
-/* ---------- التهيئة ---------- */
 function bindLevelButtons() {
     document.querySelectorAll('.level-card').forEach(card => {
         card.addEventListener('click', () => {
@@ -323,12 +368,10 @@ async function init() {
             : data.data.map(r => Object.fromEntries(data.columns.map((c, i) => [c, r[i]])));
         buildDerived();
 
-        // تعبئة عدد الأسئلة
         const sel = $('amountSelect');
         sel.innerHTML = Q.config.amounts.map(n => `<option value="${n}">${n} أسئلة</option>`).join('');
         sel.value = 10;
 
-        // عرض أفضل النتائج المحفوظة
         let best = {};
         try { best = JSON.parse(localStorage.getItem(BEST_KEY) || '{}'); } catch (e) {}
         $('bestScores').innerHTML = Q.config.levels.map(l =>
