@@ -300,7 +300,9 @@ td.surah-name { font-weight: bold; font-size: 1.12em; color: var(--text-main); w
 .makki-badge { background: var(--badge-makki-bg); color: var(--badge-makki-text); }
 .madani-badge { background: var(--badge-madani-bg); color: var(--badge-madani-text); }
 
-.cell-tag { font-size: 0.85em; }
+.cell-tag { font-size: 0.85em; white-space: normal; word-break: break-word; }
+/* جعل البيانات تتلاءم (fit) داخل الخلايا دون فيض أفقي */
+td { word-break: break-word; overflow-wrap: anywhere; }
 .cell-verse { font-size: 0.85em; max-width: 420px; text-align: justify; line-height: 1.7; }
 /* عمود "أطول آية" أعرض لاستيعاب النص الكامل */
 .cell-longest { max-width: 720px; min-width: 560px; white-space: normal; }

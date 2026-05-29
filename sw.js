@@ -1,13 +1,16 @@
 /* Service Worker — يتيح عمل التطبيق دون اتصال (PWA) */
-const CACHE = 'quran-db-v2';
+const CACHE = 'quran-db-v3';
 const ASSETS = [
     'index.html',
     'stats.html',
     'faq.html',
+    'quiz.html',
     'style.css',
     'app.js',
     'stats.js',
+    'quiz.js',
     'quran-data.json',
+    'quiz/questions.json',
     'manifest.json',
 ];
 
