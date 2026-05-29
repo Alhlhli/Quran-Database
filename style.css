@@ -302,6 +302,9 @@ td.surah-name { font-weight: bold; font-size: 1.12em; color: var(--text-main); w
 
 .cell-tag { font-size: 0.85em; }
 .cell-verse { font-size: 0.85em; max-width: 420px; text-align: justify; line-height: 1.7; }
+/* عمود "أطول آية" أعرض لاستيعاب النص الكامل */
+.cell-longest { max-width: 720px; min-width: 560px; white-space: normal; }
+th.th-longest { min-width: 560px; }
 .cell-prophets { background: rgba(255, 243, 205, 0.6); }
 [data-theme="dark"] .cell-prophets { background: rgba(120, 95, 20, 0.35); }
 

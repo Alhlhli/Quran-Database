@@ -228,6 +228,7 @@ function renderHeader() {
         // ملاحظة: لا نضبط position:relative حتى لا نُلغِ تثبيت الرأس (sticky top)؛
         // فالعنصر sticky يصلح أصلًا كمرجع لأيقونة التصفية المطلقة.
         if (col.key === 'name') th.classList.add('col-name');
+        if (col.key === 'longestVerse') th.classList.add('th-longest');
 
         const textSpan = document.createElement('span');
         textSpan.className = 'header-text';
@@ -277,8 +278,10 @@ function createCell(surah, col) {
         return td;
     }
     const text = cellText(surah, col);
-    if (col.verse) td.className = 'cell-verse';
-    else if (col.type === 'text') td.classList.add('cell-tag');
+    if (col.verse) {
+        td.className = 'cell-verse';
+        if (col.key === 'longestVerse') td.classList.add('cell-longest');
+    } else if (col.type === 'text') td.classList.add('cell-tag');
     if (col.key === 'prophets' && text !== PLACEHOLDER) td.classList.add('cell-prophets');
     td.textContent = text;
     return td;
